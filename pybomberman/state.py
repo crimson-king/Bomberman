@@ -1,4 +1,4 @@
-from pybomberman import GameHandler, Game
+from pybomberman.core import GameHandler, Game
 
 
 class State(GameHandler):
@@ -53,7 +53,7 @@ class StateManager(GameHandler):
 manager = StateManager()
 
 
-class StatedGameHandler(GameHandler):
+class StateGameHandler(GameHandler):
     def handle_input(self, event):
         manager.handle_input(event)
 
@@ -65,7 +65,7 @@ class StatedGameHandler(GameHandler):
 
 
 if __name__ == '__main__':
-    class SampleGameHandler(StatedGameHandler):
+    class SampleGameHandler(StateGameHandler):
         max_state_time = 2000
 
         def __init__(self):
