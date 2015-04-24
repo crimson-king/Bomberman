@@ -2,6 +2,7 @@ import pygame
 from state import State
 
 BLACK = (0, 0, 0)
+CRIMSON = (220, 20, 60)
 pygame.init()
 
 
@@ -21,6 +22,10 @@ class Item(pygame.font.Font):
     def set_position(self, x, y):
         self.position = (x, y)
 
+    def highlight(self, color):
+        self.color = color
+        self.label = self.font.render(self.text, 1, self.color)
+
 
 class MenuState(State):
     def __init__(self, width, height, texts):
@@ -28,6 +33,7 @@ class MenuState(State):
         self.height = height/2
         self.texts = texts
         self.items = []
+        self.selected = 0
 
         for i, item in enumerate(self.texts):
             menu_item = Item(item)
@@ -41,9 +47,22 @@ class MenuState(State):
         canvas.fill((40, 60, 190))
         for item in self.items:
             canvas.blit(item.label, item.position)
+            item.highlight(BLACK)
+        self.items[self.selected].highlight(CRIMSON)
 
     def handle_input(self, event):
-        pass
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_DOWN:
+                if self.selected < len(self.items) - 1:
+                    self.selected += 1
+                else:
+                    self.selected = 0
+            elif event.key == pygame.K_UP:
+                if self.selected == 0:
+                    self.selected = len(self.items) - 1
+                else:
+                    self.selected -= 1
+
 
     def handle_update(self, dt):
         pass
