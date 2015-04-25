@@ -9,12 +9,11 @@ pygame.init()
 class Item(pygame.font.Font):
     def __init__(self, text, x=0, y=0, font="Arial", size=60,
                  color=BLACK):
-
         self.font = pygame.font.SysFont(font, size)
-        self.text = text
+        (self.text, self.function) = text
         self.color = color
         self.size = size
-        self.label = self.font.render(text, 1, self.color)
+        self.label = self.font.render(self.text, 1, self.color)
         self.width = self.label.get_rect().width
         self.height = self.label.get_rect().height
         self.position = (x, y)
@@ -62,7 +61,8 @@ class MenuState(State):
                     self.selected = len(self.items) - 1
                 else:
                     self.selected -= 1
-
+            elif event.key == pygame.K_RETURN:  # K_RETURN = enter
+                self.items[self.selected].function()
 
     def handle_update(self, dt):
         pass
