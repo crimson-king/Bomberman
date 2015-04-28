@@ -1,4 +1,4 @@
-from pybomberman.core import GameHandler, Game
+from framework.core import GameHandler, Game
 
 
 class State(GameHandler):

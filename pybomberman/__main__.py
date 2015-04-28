@@ -1,6 +1,6 @@
 __author__ = 'Mateusz'
 
-from facade import Facade
+from pybomberman.facade import Facade
 
 facade = Facade()
 facade.run_game()
