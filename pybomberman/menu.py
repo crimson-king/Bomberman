@@ -1,6 +1,9 @@
 import pygame
 
+from framework.input import InitialAction
 from framework.state import State
+from framework import input_manager
+
 
 BLACK = (0, 0, 0)
 CRIMSON = (220, 20, 60)
@@ -29,8 +32,8 @@ class Item(pygame.font.Font):
 
 class MenuState(State):
     def __init__(self, width, height, texts):
-        self.width = width/2
-        self.height = height/2
+        self.width = width / 2
+        self.height = height / 2
         self.texts = texts
         self.items = []
         self.selected = 0
@@ -38,10 +41,23 @@ class MenuState(State):
         for i, item in enumerate(self.texts):
             menu_item = Item(item)
             height = menu_item.height * len(self.texts)
-            x = self.width - menu_item.width/2
-            y = self.height/2 - height/2 + i*2 + 2*i * menu_item.height
+            x = self.width - menu_item.width / 2
+            y = self.height / 2 - height / 2 + i * 2 + 2 * i * menu_item.height
             menu_item.set_position(x, y)
             self.items.append(menu_item)
+
+        self.select_action = InitialAction()
+        self.up_action = InitialAction()
+        self.down_action = InitialAction()
+
+    def resume(self):
+        input_manager.map_action(pygame.K_RETURN, self.select_action)
+        input_manager.map_action(pygame.K_UP, self.up_action)
+        input_manager.map_action(pygame.K_DOWN, self.down_action)
+        input_manager.reset()
+
+    def pause(self):
+        input_manager.clear()
 
     def handle_draw(self, canvas):
         canvas.fill((40, 60, 190))
@@ -51,22 +67,18 @@ class MenuState(State):
         self.items[self.selected].highlight(CRIMSON)
 
     def handle_input(self, event):
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_DOWN:
-                if self.selected < len(self.items) - 1:
-                    self.selected += 1
-                else:
-                    self.selected = 0
-            elif event.key == pygame.K_UP:
-                if self.selected == 0:
-                    self.selected = len(self.items) - 1
-                else:
-                    self.selected -= 1
-            elif event.key == pygame.K_RETURN:  # K_RETURN = enter
-                self.items[self.selected].function()
+        input_manager.handle_input(event)
 
     def handle_update(self, dt):
-        pass
+        self.items[self.selected].highlight(BLACK)
 
+        if self.up_action.active():
+            self.selected = max(self.selected - 1, 0)
 
+        if self.down_action.active():
+            self.selected = min(self.selected + 1, len(self.items) - 1)
 
+        self.items[self.selected].highlight(CRIMSON)
+
+        if self.select_action.active():
+            self.items[self.selected].function()
