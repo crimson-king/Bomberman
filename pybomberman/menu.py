@@ -2,7 +2,6 @@ import pygame
 
 from framework.state import State
 
-
 BLACK = (0, 0, 0)
 CRIMSON = (220, 20, 60)
 pygame.init()
