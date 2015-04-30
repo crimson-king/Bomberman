@@ -13,7 +13,7 @@ class GameHandler:
 
 
 class Game:
-    def __init__(self, handler, fps=60, scr_width=960, scr_height=600):
+    def __init__(self, handler: GameHandler, fps=60, scr_width=960, scr_height=600):
         self._handler = handler
         self._fps = fps
         self._running = False
