@@ -1,8 +1,6 @@
 from enum import Enum, unique
 
-
-class InputManager:
-    actions = {}
+import pygame
 
 
 class Action:
@@ -63,3 +61,35 @@ class InitialAction(Action):
 
     def reset(self):
         self.state = InitialAction.State.inactive
+
+
+class InputManager:
+    def __init__(self):
+        self._action_map = {}
+
+    def map_action(self, key_code, action: Action):
+        self._action_map[key_code] = action
+
+    def handle_input(self, event):
+        if not hasattr(event, 'key'):
+            return
+
+        action = self._action_map.get(event.key, None)
+
+        if not action:
+            return
+
+        if event.type == pygame.KEYDOWN:
+            action.press()
+        elif event.type == pygame.KEYUP:
+            action.release()
+
+    def reset(self):
+        for action in self._action_map.values():
+            action.reset()
+
+    def clear(self):
+        self._action_map.clear()
+
+
+manager = InputManager()
