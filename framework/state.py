@@ -19,7 +19,7 @@ class StateManager(GameHandler):
     def __init__(self):
         self._states = []
 
-    def push(self, state):
+    def push(self, state: State):
         print('pushing state', state)
         if self._states:
             self._states[-1].pause()
@@ -28,7 +28,7 @@ class StateManager(GameHandler):
         self._states.append(state)
         state.resume()
 
-    def pop(self):
+    def pop(self) -> State:
         state = self._states[-1]
         print('popping state', state)
         state.pause()
