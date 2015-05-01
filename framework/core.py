@@ -3,17 +3,22 @@ import pygame
 
 class GameHandler:
     def handle_input(self, event):
-        raise NotImplementedError
+        pass
 
     def handle_draw(self, canvas):
-        raise NotImplementedError
+        pass
 
     def handle_update(self, dt):
-        raise NotImplementedError
+        pass
+
+    # noinspection PyMethodMayBeStatic
+    def running(self) -> bool:
+        return True
 
 
 class Game:
-    def __init__(self, handler: GameHandler, fps=60, scr_width=960, scr_height=600):
+    def __init__(self, handler: GameHandler, fps=60, scr_width=960,
+                 scr_height=600):
         self._handler = handler
         self._fps = fps
         self._running = False
@@ -27,8 +32,7 @@ class Game:
         self.run()
 
     def run(self):
-        self._running = True
-        while self._running:
+        while self._handler.running():
             dt = self._clock.tick(self._fps)
             self.step(dt)
 
@@ -37,8 +41,9 @@ class Game:
     def step(self, dt):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                self._running = False
-                return
+                import sys
+                sys.exit()
+
             self._handler.handle_input(event)
 
         self._handler.handle_update(dt)
@@ -49,11 +54,8 @@ class Game:
 
 if __name__ == '__main__':
     class SimpleGameHandler(GameHandler):
-        def handle_update(self, dt):
-            pass
-
-        def handle_input(self, event):
-            pass
+        def running(self):
+            return True
 
         def handle_draw(self, canvas):
             canvas.fill((0, 0, 0xff))
