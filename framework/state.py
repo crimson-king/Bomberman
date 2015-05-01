@@ -41,13 +41,19 @@ class StateManager(GameHandler):
         return state
 
     def handle_input(self, event):
-        self._states[-1].handle_input(event)
+        if self._states:
+            self._states[-1].handle_input(event)
 
     def handle_update(self, dt):
-        self._states[-1].handle_update(dt)
+        if self._states:
+            self._states[-1].handle_update(dt)
 
     def handle_draw(self, canvas):
-        self._states[-1].handle_draw(canvas)
+        if self._states:
+            self._states[-1].handle_draw(canvas)
+
+    def running(self):
+        return bool(self._states)
 
 
 manager = StateManager()
@@ -63,9 +69,13 @@ class StateGameHandler(GameHandler):
     def handle_draw(self, canvas):
         manager.handle_draw(canvas)
 
+    def running(self):
+        return manager.running()
+
 
 if __name__ == '__main__':
     class SampleGameHandler(StateGameHandler):
+
         max_state_time = 2000
 
         def __init__(self):
@@ -75,9 +85,6 @@ if __name__ == '__main__':
             def __init__(self, color):
                 self.time = 0
                 self.color = color
-
-            def handle_input(self, event):
-                pass
 
             def handle_update(self, dt):
                 self.time += dt
