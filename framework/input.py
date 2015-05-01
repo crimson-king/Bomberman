@@ -38,9 +38,6 @@ class NormalAction(Action):
     def reset(self):
         self.state = NormalAction.State.released
 
-    def __bool__(self):
-        return bool(self)
-
 
 class InitialAction(Action):
     @unique
@@ -55,6 +52,7 @@ class InitialAction(Action):
         if self.state is InitialAction.State.active:
             self.state = InitialAction.State.inactive
             return True
+        return False
 
     def press(self):
         self.state = InitialAction.State.active
