@@ -5,6 +5,7 @@ from framework.core import Game
 from framework.input import NormalAction, InitialAction
 from framework.state import State
 from pybomberman.objects import Player
+from framework import state_manager, input_manager
 
 
 class GameState(State):
