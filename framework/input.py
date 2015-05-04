@@ -4,6 +4,9 @@ import pygame
 
 
 class Action:
+    def __bool__(self):
+        return self.active()
+
     def active(self):
         raise NotImplementedError
 
@@ -74,7 +77,7 @@ class InputManager:
 
         action = self._action_map.get(event.key, None)
 
-        if not action:
+        if action is None:
             return
 
         if event.type == pygame.KEYDOWN:
