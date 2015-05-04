@@ -1,3 +1,5 @@
+import math
+
 import pygame
 from pygame.sprite import Group
 
@@ -11,6 +13,7 @@ from pybomberman import PPM
 from pybomberman.configuration import configuration
 from pybomberman.controllers import HumanController
 from pybomberman.objects import Player, Wall
+from pybomberman.utils import abs_ceil
 
 
 class Board:
@@ -81,6 +84,27 @@ class GameState(State):
             controller.update(dt)
 
         self.board.update(dt)
+
+        for player in self.board.players:
+            player_center_x = player.rect.x + player.rect.width * .5
+            player_center_y = player.rect.y + player.rect.height * .5
+            for wall in self.board.walls:
+                wall_center_x = wall.rect.x + wall.rect.width * .5
+                wall_center_y = wall.rect.y + wall.rect.height * .5
+
+                radius = (player.rect.width + wall.rect.width) * .5
+
+                delta_x = player_center_x - wall_center_x
+                delta_y = player_center_y - wall_center_y
+
+                delta_sq = delta_x ** 2 + delta_y ** 2
+                if delta_sq < radius ** 2:
+                    angle = math.atan2(delta_y, delta_x) + math.pi * .5
+
+                    dist = radius - math.sqrt(delta_sq)
+
+                    player.rect.x += abs_ceil(math.sin(angle) * dist)
+                    player.rect.y -= abs_ceil(math.cos(angle) * dist)
 
 
 if __name__ == '__main__':

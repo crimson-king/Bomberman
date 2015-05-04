@@ -18,4 +18,3 @@ class Wall(Sprite):
         self.image = pygame.Surface((PPM, PPM))
         self.image.fill((0, 0, 0xaa))
         self.rect = self.image.get_rect()
-        print('woo-hoo')
