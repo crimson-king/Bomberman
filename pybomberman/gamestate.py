@@ -3,7 +3,7 @@ import math
 import pygame
 from pygame.sprite import Group
 
-from framework import input_manager
+from framework import input_manager, state_manager
 
 from framework.core import Game
 
@@ -108,7 +108,6 @@ class GameState(State):
 
 
 if __name__ == '__main__':
-    from framework import state_manager
     from framework.state import StateGameHandler
 
     state_manager.push(GameState())
