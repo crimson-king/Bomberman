@@ -1,25 +1,50 @@
 import pygame
 from pygame.sprite import Group
 
-from pybomberman.controllers import HumanController
+from framework import input_manager
 
 from framework.core import Game
+
 from framework.input import InitialAction
 from framework.state import State
-from framework import input_manager
+from pybomberman import PPM
 from pybomberman.configuration import configuration
-from pybomberman.objects import Player
+from pybomberman.controllers import HumanController
+from pybomberman.objects import Player, Wall
+
+
+class Board:
+    def __init__(self, width: int, height: int):
+        super().__init__()
+        self.width = width
+        self.height = height
+        self.players = Group()
+        self.walls = Group()
+        for w in range(width >> 1):
+            for h in range(height >> 1):
+                wall = Wall()
+                wall.rect.x = PPM * (2 * w + 1)
+                wall.rect.y = PPM * (2 * h + 1)
+                self.walls.add(wall)
+
+    def draw(self, canvas):
+        self.walls.draw(canvas)
+        self.players.draw(canvas)
+
+    def update(self, dt):
+        self.players.update(dt)
 
 
 class GameState(State):
     def __init__(self):
-        self.board = Group()
+        # self.board = Group()
+        self.board = Board(9, 9)
 
         self.controllers = [HumanController(Player())
                             for i in range(configuration.players)]
 
         for controller in self.controllers:
-            self.board.add(controller.player)
+            self.board.players.add(controller.player)
 
         self.escape_action = InitialAction()
 
