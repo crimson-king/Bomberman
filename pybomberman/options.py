@@ -1,3 +1,4 @@
+import inspect
 import pygame
 from framework.state import State
 from pybomberman.menu import Item
@@ -43,7 +44,8 @@ class OptionsState(State):
                 else:
                     self.selected -= 1
             elif event.key == pygame.K_RETURN:  # K_RETURN = enter
-                if self.selected == 0:
+                function_spec = inspect.getfullargspec(self.items[self.selected].function)
+                if len(function_spec[0]) == 1:
                     self.items[self.selected].function(self.items[0])
                 else:
                     self.items[self.selected].function()
