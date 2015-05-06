@@ -17,12 +17,13 @@ class PlayerKeyConfiguration:
 
 class Configuration:
     players = 2
+    max_players = 4
     # resolution = (...)
     # key bindings for each player = <tu po jakiejs liscie po 5 klawiszy>
 
     def __init__(self):
         self.player_key_configs = [PlayerKeyConfiguration()
-                                   for i in range(self.players)]
+                                   for i in range(self.max_players)]
 
 
 configuration = Configuration()
