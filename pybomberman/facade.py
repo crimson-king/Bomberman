@@ -3,6 +3,7 @@ import sys
 from framework.core import Game
 from framework.state import StateGameHandler
 from framework import state_manager
+from pybomberman.keyconfig import KeyConfigState
 from pybomberman.menu import MenuState, Item
 from pybomberman.options import OptionsState
 from pybomberman.configuration import configuration
@@ -20,15 +21,10 @@ class Facade:
             state_manager.pop()
 
         def chooseplayers(item: Item):
-            if configuration.players == 2:
-                configuration.players = 3
-                item.text = "Amount of players: <3>"
-            elif configuration.players == 3:
-                configuration.players = 4
-                item.text = "Amount of players: <4>"
-            else:
+            configuration.players += 1
+            if configuration.players > configuration.max_players:
                 configuration.players = 2
-                item.text = "Amount of players: <2>"
+            item.text = "Amount of players: <%d>" % configuration.players
 
         def startgame():
             state_manager.push(GameState())
@@ -36,12 +32,17 @@ class Facade:
 
         def options():
             optionfunctions = (('Amount of players: <2>', chooseplayers), ('Resolution', 'tmp'),
-                               ('Key bindings', 'tmp'), ('Go back', backtomenu))
+                               ('Key bindings', key_bindings), ('Go back', backtomenu))
             items = []
             for i, item in enumerate(optionfunctions):
                 items.append(Item(item))
             state_manager.push(OptionsState(scr_width, scr_height, items))
             Game(handler=StateGameHandler()).start()
+
+        def key_bindings():
+            state_manager.push(KeyConfigState(scr_width, scr_height))
+            Game(handler=StateGameHandler()).start()
+
 
         texts = (('Start', startgame), ('Options', options), ('Exit', sys.exit))
 
