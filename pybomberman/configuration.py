@@ -1,8 +1,9 @@
+import shelve
 import pygame
 
 
 class PlayerKeyConfiguration:
-    def __init__(self,
+    def __init__(self, i,
                  action=pygame.K_SPACE,
                  up=pygame.K_UP,
                  down=pygame.K_DOWN,
@@ -13,29 +14,22 @@ class PlayerKeyConfiguration:
         self.down = down
         self.left = left
         self.right = right
+        self.number = i
 
 
 class Configuration:
-    players = 2
+
     max_players = 4
     # resolution = (...)
     # key bindings for each player = <tu po jakiejs liscie po 5 klawiszy>
 
     def __init__(self):
-        self.player_key_configs = [PlayerKeyConfiguration()
+        shelf = shelve.open('shelf.db', writeback=True)
+        self.player_key_configs = [PlayerKeyConfiguration(i, shelf['player'+str(i)+'action'],
+                                                          shelf['player'+str(i)+'up'], shelf['player'+str(i)+'down'],
+                                                          shelf['player'+str(i)+'left'], shelf['player'+str(i)+'right'])
                                    for i in range(self.max_players)]
-
+        self.players = shelf['players']
+        shelf.close()
 
 configuration = Configuration()
-"""class _Configuration:
-        def __init__(self):
-            self.players = 2
-
-        def setplayers(self, i):
-            self.players = i
-
-    instance = None
-
-    def __init__(self, arg):
-        if not Configuration.instance:
-            Configuration.instance = Configuration._Configuration()"""

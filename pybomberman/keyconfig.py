@@ -15,6 +15,7 @@ pygame.init()
 
 class KeyConfigState(State):
     """ This class implements State that allows user to view and change key mappings """
+
     def __init__(self, width, height):
         self.width = width/2
         self.height = height/2

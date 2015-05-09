@@ -12,17 +12,14 @@ class OptionsState(State):
     def __init__(self, width, height, items):
         self.width = width/2
         self.height = height/2
-       # self.texts = texts
         self.items = items
         self.selected = 0
 
         for i, menu_item in enumerate(self.items):
-            #menu_item = Item(item)
             height = menu_item.height * len(self.items)
             x = self.width - menu_item.width/2
             y = self.height/2 - height/2 + i*2 + 2*i * menu_item.height
             menu_item.set_position(x, y)
-           # self.items.append(menu_item)
 
     def handle_draw(self, canvas):
         canvas.fill((40, 60, 190))

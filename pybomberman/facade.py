@@ -1,4 +1,6 @@
 import sys
+import shelve
+import pygame
 
 from framework.core import Game
 from framework.state import StateGameHandler
@@ -18,6 +20,15 @@ class Facade:
         scr_height = 600
 
         def backtomenu():
+            saveshelf = shelve.open('shelf.db', writeback=True)
+            saveshelf['players'] = configuration.players
+            for i in range(configuration.max_players):
+                saveshelf['player'+str(i)+'action'] = configuration.player_key_configs[i].action
+                saveshelf['player'+str(i)+'up'] = configuration.player_key_configs[i].up
+                saveshelf['player'+str(i)+'left'] = configuration.player_key_configs[i].left
+                saveshelf['player'+str(i)+'down'] = configuration.player_key_configs[i].down
+                saveshelf['player'+str(i)+'right'] = configuration.player_key_configs[i].right
+            saveshelf.close()
             state_manager.pop()
 
         def chooseplayers(item: Item):
@@ -31,8 +42,8 @@ class Facade:
             Game(handler=StateGameHandler()).start()
 
         def options():
-            optionfunctions = (('Amount of players: <2>', chooseplayers), ('Resolution', 'tmp'),
-                               ('Key bindings', key_bindings), ('Go back', backtomenu))
+            optionfunctions = (('Amount of players: <%d>' % configuration.players, chooseplayers),
+                               ('Resolution', backtomenu), ('Key bindings', key_bindings), ('Go back', backtomenu))
             items = []
             for i, item in enumerate(optionfunctions):
                 items.append(Item(item))
@@ -43,8 +54,6 @@ class Facade:
             state_manager.push(KeyConfigState(scr_width, scr_height))
             Game(handler=StateGameHandler()).start()
 
-
         texts = (('Start', startgame), ('Options', options), ('Exit', sys.exit))
-
         state_manager.push(MenuState(scr_width, scr_height, texts))
         Game(handler=StateGameHandler()).start()
