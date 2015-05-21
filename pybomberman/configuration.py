@@ -1,6 +1,6 @@
 import shelve
 import pygame
-
+import json
 
 class PlayerKeyConfiguration:
     def __init__(self, i,
@@ -21,15 +21,17 @@ class Configuration:
 
     max_players = 4
     # resolution = (...)
-    # key bindings for each player = <tu po jakiejs liscie po 5 klawiszy>
 
     def __init__(self):
-        shelf = shelve.open('shelf.db', writeback=True)
-        self.player_key_configs = [PlayerKeyConfiguration(i, shelf['player'+str(i)+'action'],
-                                                          shelf['player'+str(i)+'up'], shelf['player'+str(i)+'down'],
-                                                          shelf['player'+str(i)+'left'], shelf['player'+str(i)+'right'])
+        file = open('settings.json')
+        settings = json.load(file)
+        self.player_key_configs = [PlayerKeyConfiguration(i, settings['p'+str(i)+'keys']['action'],
+                                                          settings['p'+str(i)+'keys']['up'],
+                                                          settings['p'+str(i)+'keys']['down'],
+                                                          settings['p'+str(i)+'keys']['left'],
+                                                          settings['p'+str(i)+'keys']['right'])
                                    for i in range(self.max_players)]
-        self.players = shelf['players']
-        shelf.close()
+
+        self.players = settings['players']['amount']
 
 configuration = Configuration()

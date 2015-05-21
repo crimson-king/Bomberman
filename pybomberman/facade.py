@@ -1,6 +1,6 @@
 import sys
-import shelve
 import pygame
+import json
 
 from framework.core import Game
 from framework.state import StateGameHandler
@@ -20,15 +20,29 @@ class Facade:
         scr_height = 600
 
         def backtomenu():
-            saveshelf = shelve.open('shelf.db', writeback=True)
-            saveshelf['players'] = configuration.players
-            for i in range(configuration.max_players):
-                saveshelf['player'+str(i)+'action'] = configuration.player_key_configs[i].action
-                saveshelf['player'+str(i)+'up'] = configuration.player_key_configs[i].up
-                saveshelf['player'+str(i)+'left'] = configuration.player_key_configs[i].left
-                saveshelf['player'+str(i)+'down'] = configuration.player_key_configs[i].down
-                saveshelf['player'+str(i)+'right'] = configuration.player_key_configs[i].right
-            saveshelf.close()
+            settings = {'players': {'amount': configuration.players},
+                        'p1keys': {'left': configuration.player_key_configs[1].left,
+                                   'right': configuration.player_key_configs[1].right,
+                                   'up': configuration.player_key_configs[1].up,
+                                   'down': configuration.player_key_configs[1].down,
+                                   'action': configuration.player_key_configs[1].action},
+                        'p2keys': {'left': configuration.player_key_configs[2].left,
+                                   'right': configuration.player_key_configs[2].right,
+                                   'up': configuration.player_key_configs[2].up,
+                                   'down': configuration.player_key_configs[2].down,
+                                   'action': configuration.player_key_configs[2].action},
+                        'p3keys': {'left': configuration.player_key_configs[3].left,
+                                   'right': configuration.player_key_configs[3].right,
+                                   'up': configuration.player_key_configs[3].up,
+                                   'down': configuration.player_key_configs[3].down,
+                                   'action': configuration.player_key_configs[3].action},
+                        'p0keys': {'left': configuration.player_key_configs[0].left,
+                                   'right': configuration.player_key_configs[0].right,
+                                   'up': configuration.player_key_configs[0].up,
+                                   'down': configuration.player_key_configs[0].down,
+                                   'action': configuration.player_key_configs[0].action}}
+            with open('settings.json', 'w') as outfile:
+                json.dump(settings, outfile)
             state_manager.pop()
 
         def chooseplayers(item: Item):
