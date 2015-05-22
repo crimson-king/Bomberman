@@ -54,12 +54,12 @@ class Wall(GameObject):
 
 
 class Bomb(GameObject):
-    def __init__(self, owner: 'Player', board: 'Board', sprite=WallSprite(),
+    def __init__(self, owner: 'Player', world: 'World', sprite=WallSprite(),
                  *args, **kwargs):
         shape = Rectangle(0, 0, 1, 1)
         super().__init__(shape, sprite, *args, **kwargs)
         self.owner = owner
-        self.board = board
+        self.world = world
 
         self.range = owner.bomb_range
         self.time = 3
@@ -81,8 +81,8 @@ class Player(GameObject):
         self.speed_level = 0
 
     def spawn_bomb(self, world: 'World'):
-        bomb = Bomb(self, None)
-        bomb.position.x = self.position.x
-        bomb.position.y = self.position.y
+        bomb = Bomb(self, world)
+        bomb.position.x = round(self.position.x)
+        bomb.position.y = round(self.position.y)
         world.bombs.add_node(bomb)
         print('bomb spawned!')
