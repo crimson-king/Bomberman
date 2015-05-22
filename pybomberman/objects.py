@@ -65,8 +65,10 @@ class Bomb(GameObject):
         self.time = 3
 
     def update(self, dt):
-        self.time -= 3
-        self.parent.remove_node(self)
+        self.time -= dt
+        if self.time <= 0:
+            print('boom!')
+            self.parent.remove_node(self)
 
 
 class Player(GameObject):

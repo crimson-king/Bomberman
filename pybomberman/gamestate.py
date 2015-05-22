@@ -40,8 +40,7 @@ class World(NodeGroup):
         super().draw(canvas, offset)
 
     def update(self, dt):
-        for player in self.players:
-            player.update(dt)
+        super().update(dt)
 
         for player in self.players:
             for wall in self.walls:
