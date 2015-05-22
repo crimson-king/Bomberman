@@ -1,40 +1,45 @@
 {
-  "players": [
-    {
-      "key_binding": {
-        "action": 13,
-        "up": 273,
-        "down": 274,
-        "left": 276,
-        "right": 275
-      }
-    },
-    {
-      "key_binding": {
-        "action": 32,
-        "up": 119,
-        "down": 115,
-        "left": 97,
-        "right": 100
-      }
-    },
-    {
-      "key_binding": {
-        "action": 32,
-        "up": 273,
-        "down": 274,
-        "left": 276,
-        "right": 275
-      }
-    },
-    {
-      "key_binding": {
-        "action": 32,
-        "up": 273,
-        "down": 274,
-        "left": 276,
-        "right": 275
-      }
-    }
-  ]
+    "resolution": [
+        960,
+        600
+    ],
+    "player_count": 2,
+    "players": [
+        {
+            "key_binding": {
+                "left": 276,
+                "down": 274,
+                "right": 275,
+                "up": 273,
+                "action": 13
+            }
+        },
+        {
+            "key_binding": {
+                "left": 97,
+                "down": 115,
+                "right": 100,
+                "up": 119,
+                "action": 32
+            }
+        },
+        {
+            "key_binding": {
+                "left": 276,
+                "down": 274,
+                "right": 275,
+                "up": 273,
+                "action": 32
+            }
+        },
+        {
+            "key_binding": {
+                "left": 276,
+                "down": 274,
+                "right": 275,
+                "up": 273,
+                "action": 32
+            }
+        }
+    ]
 }

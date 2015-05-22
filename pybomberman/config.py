@@ -24,6 +24,9 @@ class PlayerConfig:
     def __init__(self, **kwargs):
         self.key_binding = PlayerKeyBinding(**kwargs['key_binding'])
 
+    def to_dict(self):
+        return {'key_binding': self.key_binding.__dict__}
+
 
 class Config:
     def __init__(self, **kwargs):
@@ -32,6 +35,16 @@ class Config:
 
         self.players = [PlayerConfig(**player_dict)
                         for player_dict in kwargs['players']]
+
+    def to_dict(self):
+        return {'resolution': self.resolution,
+                'player_count': self.player_count,
+                'players': [p.to_dict() for p in self.players],
+                }
+
+    def save(self):
+        with open(_filepath, mode='w+') as file_handle:
+            json.dump(self.to_dict(), fp=file_handle, indent=4)
 
 _filename = 'config.json'
 
