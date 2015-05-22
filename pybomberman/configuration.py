@@ -1,6 +1,7 @@
-import shelve
-import pygame
 import json
+
+import pygame
+
 
 class PlayerKeyConfiguration:
     def __init__(self, i,
@@ -20,7 +21,7 @@ class PlayerKeyConfiguration:
 class Configuration:
 
     max_players = 4
-    # resolution = (...)
+    resolution = (960, 600)
 
     def __init__(self):
         file = open('settings.json')

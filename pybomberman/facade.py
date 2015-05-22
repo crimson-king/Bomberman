@@ -1,5 +1,4 @@
 import sys
-import pygame
 import json
 
 from framework.core import Game
@@ -15,9 +14,6 @@ from pybomberman.gamestate import GameState
 class Facade:
 
     def run_game(self):
-
-        scr_width = 960
-        scr_height = 600
 
         def backtomenu():
             settings = {'players': {'amount': configuration.players},
@@ -61,13 +57,13 @@ class Facade:
             items = []
             for i, item in enumerate(optionfunctions):
                 items.append(Item(item))
-            state_manager.push(OptionsState(scr_width, scr_height, items))
+            state_manager.push(OptionsState(*configuration.resolution, items=items))
             Game(handler=StateGameHandler()).start()
 
         def key_bindings():
-            state_manager.push(KeyConfigState(scr_width, scr_height))
+            state_manager.push(KeyConfigState(*configuration.resolution))
             Game(handler=StateGameHandler()).start()
 
         texts = (('Start', startgame), ('Options', options), ('Exit', sys.exit))
-        state_manager.push(MenuState(scr_width, scr_height, texts))
-        Game(handler=StateGameHandler()).start()
+        state_manager.push(MenuState(*configuration.resolution, texts=texts))
+        Game(StateGameHandler(), 60, *configuration.resolution).start()
