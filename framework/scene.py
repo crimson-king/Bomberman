@@ -7,6 +7,8 @@ class Node:
         self.position.x = x
         self.position.y = y
 
+        self.parent = None
+
     def draw(self, canvas, offset=(0, 0)):
         raise NotImplementedError
 
@@ -21,6 +23,11 @@ class NodeGroup(Node):
 
     def add_node(self, node: Node):
         self._nodes.append(node)
+        node.parent = self
+
+    def remove_node(self, node: Node):
+        self._nodes.remove(node)
+        node.parent = None
 
     def draw(self, canvas, offset=(0, 0)):
         for node in self._nodes:
