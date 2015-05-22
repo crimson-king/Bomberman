@@ -33,7 +33,7 @@ class Game:
 
     def run(self):
         while self._handler.running():
-            dt = self._clock.tick(self._fps)
+            dt = self._clock.tick(self._fps) * 1e-3
             self.step(dt)
 
         pygame.quit()
