@@ -5,7 +5,7 @@ from framework.core import Game
 from framework.input import InitialAction
 from framework.state import State
 from pybomberman import PPM
-from pybomberman.configuration import configuration
+from pybomberman.config import config
 from pybomberman.controllers import HumanController
 from pybomberman.objects import PlayerSprite, GameObject, Wall
 from pybomberman.shapes import Rectangle
@@ -45,12 +45,12 @@ class GameState(State):
     def __init__(self):
         self.board = Board(9, 9)
         self.board.position.x = \
-            (configuration.resolution[0] - self.board.width) * .5
+            (config.resolution[0] - self.board.width) * .5
         self.board.position.y = \
-            (configuration.resolution[1] - self.board.height) * .5
+            (config.resolution[1] - self.board.height) * .5
 
         self.controllers = [HumanController(PlayerSprite())
-                            for i in range(configuration.players)]
+                            for i in range(config.player_count)]
 
         for controller in self.controllers:
             self.board.add_node(GameObject(shape=Rectangle(0, 0, 50, 50),
@@ -62,14 +62,16 @@ class GameState(State):
         input_manager.map_action(pygame.K_ESCAPE, self.escape_action)
 
         for i, controller in enumerate(self.controllers):
-            input_manager.map_action(configuration.player_key_configs[i].up,
+            player_config = config.players[i]
+            input_manager.map_action(player_config.key_binding.up,
                                      controller.action_up)
-            input_manager.map_action(configuration.player_key_configs[i].down,
+            input_manager.map_action(player_config.key_binding.down,
                                      controller.action_down)
-            input_manager.map_action(configuration.player_key_configs[i].left,
+            input_manager.map_action(player_config.key_binding.left,
                                      controller.action_left)
-            input_manager.map_action(configuration.player_key_configs[i].right,
+            input_manager.map_action(player_config.key_binding.right,
                                      controller.action_right)
+            print(player_config.key_binding.__dict__)
 
         input_manager.reset()
 
