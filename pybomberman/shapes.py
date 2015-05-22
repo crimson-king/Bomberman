@@ -1,3 +1,4 @@
+from itertools import chain
 from numbers import Real
 
 from pygame.math import Vector2
@@ -58,4 +59,8 @@ class Rectangle(Shape):
         self.position.set(x - .5 * self.width, y - .5 * self.height)
 
     def move(self, x: Real=0, y: Real=0):
-        self.position.move(x, y)
+        self.position += (x, y)
+
+    def __repr__(self):
+        return '<{}: ({}, {}, {}, {})>'.format(
+            self.__class__.__name__, *chain(self.position, self.size))
