@@ -25,4 +25,7 @@ class HumanController(Controller):
             - (self.action_up.active() - self.action_down.active())
 
         if self.action_action.active():
-            self.player.spawn_bomb(self.world)
+            position = \
+                int(self.player.position.x + self.player.shape.width * .5), \
+                int(self.player.position.y + self.player.shape.height * .5)
+            self.player.spawn_bomb(self.world, position)

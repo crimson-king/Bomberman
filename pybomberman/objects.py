@@ -1,3 +1,5 @@
+from itertools import repeat
+
 import pygame
 from pygame.math import Vector2
 from pygame.rect import Rect
@@ -35,7 +37,23 @@ class WallSprite(Sprite):
     def __init__(self):
         super().__init__()
         self.image = pygame.Surface((PPM, PPM))
-        self.image.fill((0, 0, 0xaa))
+        self.image.fill((0, 0, 0xff))
+        self.rect = self.image.get_rect()
+
+
+class BombSprite(Sprite):
+    def __init__(self):
+        super().__init__()
+        self.image = pygame.Surface((PPM, PPM))
+        self.image.fill((0, 0, 0))
+        self.rect = self.image.get_rect()
+
+
+class FireSprite(Sprite):
+    def __init__(self):
+        super().__init__()
+        self.image = pygame.Surface((PPM, PPM))
+        self.image.fill((0xff, 0, 0))
         self.rect = self.image.get_rect()
 
 
@@ -43,7 +61,7 @@ class PlayerSprite(Sprite):
     def __init__(self):
         super().__init__()
         self.image = pygame.Surface((PPM * .5, PPM * .5))
-        self.image.fill((0x88, 0x88, 0))
+        self.image.fill((0, 0xff, 0))
         self.rect = self.image.get_rect()
 
 
@@ -53,8 +71,23 @@ class Wall(GameObject):
         super().__init__(shape, sprite, *args, **kwargs)
 
 
+class Fire(GameObject):
+    def __init__(self, owner: 'Player', sprite=FireSprite(), *args,
+                 **kwargs):
+        shape = Rectangle(0, 0, 1, 1)
+        super().__init__(shape, sprite, *args, **kwargs)
+        self.owner = owner
+
+        self.time = 1
+
+    def update(self, dt):
+        self.time -= dt
+        if self.time <= 0:
+            self.parent.remove_node(self)
+
+
 class Bomb(GameObject):
-    def __init__(self, owner: 'Player', world: 'World', sprite=WallSprite(),
+    def __init__(self, owner: 'Player', world: 'World', sprite=BombSprite(),
                  *args, **kwargs):
         shape = Rectangle(0, 0, 1, 1)
         super().__init__(shape, sprite, *args, **kwargs)
@@ -67,8 +100,37 @@ class Bomb(GameObject):
     def update(self, dt):
         self.time -= dt
         if self.time <= 0:
-            print('boom!')
+            self.detonate()
             self.parent.remove_node(self)
+
+    def detonate(self):
+        right = zip(
+            range(int(self.position.x) + 1, self.world.width),
+            repeat(int(self.position.y)))
+        left = zip(
+            range(int(self.position.x) - 1, -1, -1),
+            repeat(int(self.position.y)))
+        up = zip(
+            repeat(int(self.position.x)),
+            range(int(self.position.y) - 1, -1, -1))
+        down = zip(
+            repeat(int(self.position.x)),
+            range(int(self.position.y) + 1, self.world.height)
+        )
+        here = int(self.position.x), int(self.position.y)
+        for fields in [here], left, right, up, down:
+            for field in fields:
+                # check if bomb may be placed here
+                if field[0] % 2 == 1 and field[1] % 2 == 1:  # wall
+                    break
+
+                self.spawn_fire(field)
+
+    def spawn_fire(self, field):
+        fire = Fire(self.owner)
+        fire.position.x = field[0]
+        fire.position.y = field[1]
+        self.world.bombs.add_node(fire)
 
 
 class Player(GameObject):
@@ -80,9 +142,8 @@ class Player(GameObject):
         self.bomb_range = 1
         self.speed_level = 0
 
-    def spawn_bomb(self, world: 'World'):
+    def spawn_bomb(self, world: 'World', position):
         bomb = Bomb(self, world)
-        bomb.position.x = round(self.position.x)
-        bomb.position.y = round(self.position.y)
+        bomb.position.x = position[0]
+        bomb.position.y = position[1]
         world.bombs.add_node(bomb)
-        print('bomb spawned!')
