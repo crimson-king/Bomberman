@@ -30,8 +30,8 @@ class PlayerConfig:
 
 class Config:
     def __init__(self, **kwargs):
-        self.resolution = (960, 600)
-        self.player_count = 2
+        self.player_count = kwargs['player_count']
+        self.resolution = kwargs['resolution']
 
         self.players = [PlayerConfig(**player_dict)
                         for player_dict in kwargs['players']]
