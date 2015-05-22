@@ -4,11 +4,12 @@ from framework import input_manager, state_manager
 from framework.core import Game
 from framework.input import InitialAction
 from framework.state import State
+from framework.scene import NodeGroup
 from pybomberman import PPM
+from pybomberman import physics
 from pybomberman.config import config
 from pybomberman.controllers import HumanController
 from pybomberman.objects import Wall, Player
-from framework.scene import NodeGroup
 
 
 class Board(NodeGroup):
@@ -36,9 +37,6 @@ class Board(NodeGroup):
     def draw(self, canvas, offset=(0, 0)):
         super().draw(canvas, offset)
 
-    def update(self, dt):
-        self.players.update(dt)
-
 
 class GameState(State):
     def __init__(self):
@@ -52,7 +50,7 @@ class GameState(State):
                             for i in range(config.player_count)]
 
         for controller in self.controllers:
-            self.board.add_node(controller.player)
+            self.board.players.add_node(controller.player)
 
         self.escape_action = InitialAction()
 
@@ -89,8 +87,9 @@ class GameState(State):
         for controller in self.controllers:
             controller.update(dt)
 
-        self.board.update(dt)
-
+        for player in self.board.players:
+            for wall in self.board.walls:
+                physics.collides(player, wall, resolve=True)
 
 if __name__ == '__main__':
     from framework.state import StateGameHandler

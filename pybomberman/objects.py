@@ -33,7 +33,7 @@ class GameObject(Node):
 class PlayerSprite(Sprite):
     def __init__(self):
         super().__init__()
-        self.image = pygame.Surface((PPM, PPM))
+        self.image = pygame.Surface((PPM * .5, PPM * .5))
         self.image.fill((0x88, 0x88, 0))
         self.rect = self.image.get_rect()
 
