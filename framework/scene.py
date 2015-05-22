@@ -30,5 +30,12 @@ class NodeGroup(Node):
         for node in self._nodes:
             node.update(dt)
 
+    def __len__(self):
+        return len(self._nodes)
+
     def __iter__(self):
         return (node for node in self._nodes)
+
+    def __repr__(self):
+        return '<{name}: position: {position}, nodes: {_nodes}'.format(
+            name=self.__class__.__name__, **self.__dict__)
