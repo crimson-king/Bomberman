@@ -1,5 +1,5 @@
 from framework.input import NormalAction, InitialAction
-from pybomberman.objects import PlayerSprite
+from pybomberman.objects import Player
 
 
 class Controller:
@@ -8,7 +8,7 @@ class Controller:
 
 
 class HumanController(Controller):
-    def __init__(self, player: PlayerSprite):
+    def __init__(self, player: Player):
         self.player = player
         self.action_action = InitialAction()
         self.action_up = NormalAction()
@@ -17,9 +17,9 @@ class HumanController(Controller):
         self.action_right = NormalAction()
 
     def update(self, dt):
-        dx, dy = 0, 0
+        self.player.velocity.x = \
+            self.action_right.active() - self.action_left.active()
+        self.player.velocity.y = \
+            - (self.action_up.active() - self.action_down.active())
 
-        dx += self.action_right.active() - self.action_left.active()
-        dy -= self.action_up.active() - self.action_down.active()
-
-        self.player.rect.move_ip(dx, dy)
+        self.player.update(dt)

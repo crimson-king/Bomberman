@@ -7,8 +7,7 @@ from framework.state import State
 from pybomberman import PPM
 from pybomberman.config import config
 from pybomberman.controllers import HumanController
-from pybomberman.objects import PlayerSprite, GameObject, Wall
-from pybomberman.shapes import Rectangle
+from pybomberman.objects import Wall, Player
 from framework.scene import NodeGroup
 
 
@@ -49,12 +48,11 @@ class GameState(State):
         self.board.position.y = \
             (config.resolution[1] - self.board.height) * .5
 
-        self.controllers = [HumanController(PlayerSprite())
+        self.controllers = [HumanController(Player())
                             for i in range(config.player_count)]
 
         for controller in self.controllers:
-            self.board.add_node(GameObject(shape=Rectangle(0, 0, 50, 50),
-                                           sprite=controller.player))
+            self.board.add_node(controller.player)
 
         self.escape_action = InitialAction()
 
@@ -71,7 +69,6 @@ class GameState(State):
                                      controller.action_left)
             input_manager.map_action(player_config.key_binding.right,
                                      controller.action_right)
-            print(player_config.key_binding.__dict__)
 
         input_manager.reset()
 
