@@ -1,38 +1,41 @@
-import math
-
 import pygame
-from pygame.sprite import Group
 
 from framework import input_manager, state_manager
-
 from framework.core import Game
-
 from framework.input import InitialAction
 from framework.state import State
 from pybomberman import PPM
 from pybomberman.configuration import configuration
 from pybomberman.controllers import HumanController
-from pybomberman.objects import Player, Wall
-from pybomberman.utils import abs_ceil
+from pybomberman.objects import PlayerSprite, GameObject, Wall
+from pybomberman.shapes import Rectangle
+from framework.scene import NodeGroup
 
 
-class Board:
-    def __init__(self, width: int, height: int):
-        super().__init__()
-        self.width = width
-        self.height = height
-        self.players = Group()
-        self.walls = Group()
-        for w in range(width >> 1):
-            for h in range(height >> 1):
+class Board(NodeGroup):
+    def __init__(self, board_width: int, board_height: int,
+                 *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.board_width = board_width
+        self.board_height = board_height
+        self.width = self.board_width * PPM
+        self.height = self.board_height * PPM
+
+        self.players = NodeGroup()
+        self.walls = NodeGroup()
+        self.add_node(self.walls)
+        self.add_node(self.players)
+
+        for w in range(board_width >> 1):
+            for h in range(board_height >> 1):
                 wall = Wall()
-                wall.rect.x = PPM * (2 * w + 1)
-                wall.rect.y = PPM * (2 * h + 1)
-                self.walls.add(wall)
+                wall.position.x = PPM * (2 * w + 1)
+                wall.position.y = PPM * (2 * h + 1)
+                self.walls.add_node(wall)
 
-    def draw(self, canvas):
-        self.walls.draw(canvas)
-        self.players.draw(canvas)
+    def draw(self, canvas, offset=(0, 0)):
+        super().draw(canvas, offset)
 
     def update(self, dt):
         self.players.update(dt)
@@ -40,14 +43,18 @@ class Board:
 
 class GameState(State):
     def __init__(self):
-        # self.board = Group()
         self.board = Board(9, 9)
+        self.board.position.x = \
+            (configuration.resolution[0] - self.board.width) * .5
+        self.board.position.y = \
+            (configuration.resolution[1] - self.board.height) * .5
 
-        self.controllers = [HumanController(Player())
+        self.controllers = [HumanController(PlayerSprite())
                             for i in range(configuration.players)]
 
         for controller in self.controllers:
-            self.board.players.add(controller.player)
+            self.board.add_node(GameObject(shape=Rectangle(0, 0, 50, 50),
+                                           sprite=controller.player))
 
         self.escape_action = InitialAction()
 
@@ -73,7 +80,7 @@ class GameState(State):
         input_manager.handle_input(event)
 
     def handle_draw(self, canvas):
-        canvas.fill((0, 25, 0))
+        canvas.fill((0x33, 0x33, 0x33))
         self.board.draw(canvas)
 
     def handle_update(self, dt):
@@ -84,27 +91,6 @@ class GameState(State):
             controller.update(dt)
 
         self.board.update(dt)
-
-        for player in self.board.players:
-            player_center_x = player.rect.x + player.rect.width * .5
-            player_center_y = player.rect.y + player.rect.height * .5
-            for wall in self.board.walls:
-                wall_center_x = wall.rect.x + wall.rect.width * .5
-                wall_center_y = wall.rect.y + wall.rect.height * .5
-
-                radius = (player.rect.width + wall.rect.width) * .5
-
-                delta_x = player_center_x - wall_center_x
-                delta_y = player_center_y - wall_center_y
-
-                delta_sq = delta_x ** 2 + delta_y ** 2
-                if delta_sq < radius ** 2:
-                    angle = math.atan2(delta_y, delta_x) + math.pi * .5
-
-                    dist = radius - math.sqrt(delta_sq)
-
-                    player.rect.x += abs_ceil(math.sin(angle) * dist)
-                    player.rect.y -= abs_ceil(math.cos(angle) * dist)
 
 
 if __name__ == '__main__':

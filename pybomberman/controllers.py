@@ -1,5 +1,5 @@
 from framework.input import NormalAction, InitialAction
-from pybomberman.objects import Player
+from pybomberman.objects import PlayerSprite
 
 
 class Controller:
@@ -8,7 +8,7 @@ class Controller:
 
 
 class HumanController(Controller):
-    def __init__(self, player: Player):
+    def __init__(self, player: PlayerSprite):
         self.player = player
         self.action_action = InitialAction()
         self.action_up = NormalAction()
