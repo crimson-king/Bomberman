@@ -8,8 +8,10 @@ class Controller:
 
 
 class HumanController(Controller):
-    def __init__(self, player: Player):
+    def __init__(self, player: Player, world: 'World'):
         self.player = player
+        self.world = world
+
         self.action_action = InitialAction()
         self.action_up = NormalAction()
         self.action_down = NormalAction()
@@ -22,4 +24,5 @@ class HumanController(Controller):
         self.player.velocity.y = \
             - (self.action_up.active() - self.action_down.active())
 
-        self.player.update(dt)
+        if self.action_action.active():
+            self.player.spawn_bomb(self.world)
