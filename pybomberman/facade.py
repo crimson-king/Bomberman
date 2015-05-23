@@ -43,7 +43,7 @@ class Facade:
 
         def chooseplayers(item: Item):
             config.player_count += 1
-            if config.players > config.max_players:
+            if config.player_count > len(config.players):
                 config.player_count = 2
             item.text = "Amount of players: <%d>" % config.player_count
 
