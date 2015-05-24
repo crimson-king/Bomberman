@@ -65,6 +65,30 @@ class PlayerSprite(Sprite):
         self.rect = self.image.get_rect()
 
 
+class BombAmountPowerupSprite(Sprite):
+    def __init__(self):
+        super().__init__()
+        self.image = pygame.Surface((PPM, PPM))
+        self.image.fill((0, 100, 100))
+        self.rect = self.image.get_rect()
+
+
+class BombRangePowerupSprite(Sprite):
+    def __init__(self):
+        super().__init__()
+        self.image = pygame.Surface((PPM, PPM))
+        self.image.fill((100, 100, 0))
+        self.rect = self.image.get_rect()
+
+
+class SpeedPowerupSprite(Sprite):
+    def __init__(self):
+        super().__init__()
+        self.image = pygame.Surface((PPM, PPM))
+        self.image.fill((100, 0, 100))
+        self.rect = self.image.get_rect()
+
+
 class Wall(GameObject):
     def __init__(self, sprite=WallSprite(), *args, **kwargs):
         shape = Rectangle(0, 0, 1, 1)
@@ -141,9 +165,28 @@ class Player(GameObject):
         self.kills = 0
         self.bomb_range = 1
         self.speed_level = 0
+        self.bomb_amount = 1
 
     def spawn_bomb(self, world: 'World', position):
         bomb = Bomb(self, world)
         bomb.position.x = position[0]
         bomb.position.y = position[1]
         world.bombs.add_node(bomb)
+
+
+class SpeedPowerup(GameObject):
+    def __init__(self, sprite=SpeedPowerupSprite(), *args, **kwargs):
+        shape = Rectangle(0, 0, .4, .4)
+        super().__init__(shape, sprite, *args, **kwargs)
+
+
+class BombRangePowerup(GameObject):
+    def __init__(self, sprite=SpeedPowerupSprite(), *args, **kwargs):
+        shape = Rectangle(0, 0, .4, .4)
+        super().__init__(shape, sprite, *args, **kwargs)
+
+
+class BombAmountPowerup(GameObject):
+    def __init__(self, sprite=SpeedPowerupSprite(), *args, **kwargs):
+        shape = Rectangle(0, 0, .4, .4)
+        super().__init__(shape, sprite, *args, **kwargs)
