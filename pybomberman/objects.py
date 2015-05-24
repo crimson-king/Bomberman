@@ -41,6 +41,14 @@ class WallSprite(Sprite):
         self.rect = self.image.get_rect()
 
 
+class DestructibleWallSprite(Sprite):
+    def __init__(self):
+        super().__init__()
+        self.image = pygame.Surface((PPM, PPM))
+        self.image.fill((139,69,19))
+        self.rect = self.image.get_rect()
+
+
 class BombSprite(Sprite):
     def __init__(self):
         super().__init__()
@@ -91,6 +99,12 @@ class SpeedPowerupSprite(Sprite):
 
 class Wall(GameObject):
     def __init__(self, sprite=WallSprite(), *args, **kwargs):
+        shape = Rectangle(0, 0, 1, 1)
+        super().__init__(shape, sprite, *args, **kwargs)
+
+
+class DestructibleWall(GameObject):
+    def __init__(self, sprite=DestructibleWallSprite(), *args, **kwargs):
         shape = Rectangle(0, 0, 1, 1)
         super().__init__(shape, sprite, *args, **kwargs)
 
