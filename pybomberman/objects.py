@@ -11,6 +11,7 @@ from pybomberman import PPM
 from pybomberman.shapes import Shape, Rectangle
 from framework.scene import Node
 
+from random import randint
 
 class GameObject(Node):
     def __init__(self, shape: Shape, sprite: Sprite, *args, **kwargs):
@@ -74,10 +75,17 @@ class PlayerSprite(Sprite):
 
 
 class PowerupSprite(Sprite):
-    def __init__(self, filename, color=(0, 100, 100)):
+    def __init__(self, name):
         super().__init__()
         self.image = pygame.Surface((PPM, PPM))
         self.rect = self.image.get_rect()
+        color = (100, 100, 100)
+        if name == 0:
+            color = (100, 0, 0)
+        elif name == 1:
+            color = (0, 100, 0)
+        elif name == 2:
+            color = (0, 0, 100)
         self.image.fill(color)
 
 
@@ -91,6 +99,25 @@ class DestructibleWall(GameObject):
     def __init__(self, sprite=DestructibleWallSprite(), *args, **kwargs):
         shape = Rectangle(0, 0, 1, 1)
         super().__init__(shape, sprite, *args, **kwargs)
+
+    def destroy(self, world):
+        random_number = randint(0, 19)
+        if random_number > 3:  # 80% for bonus NOT dropping
+            self.parent.remove_node(self)
+        elif random_number == 0:  #  bomb range - 0, amount - 1, speed - 2, immortality - 3
+            powerup = Powerup(self, random_number)
+            powerup.position.x = self.position[0]
+            powerup.position.y = self.position[1]
+            world.destructible_walls.add_node(powerup)
+            self.parent.remove_node(self)
+
+
+class Powerup(GameObject):
+    def __init__(self, world: 'World', name=None, *args, **kwargs):
+        sprite = PowerupSprite(name)
+        shape = Rectangle(0, 0, 1, 1)
+        super().__init__(shape, sprite, *args, **kwargs)
+        self.world = world
 
 
 class Fire(GameObject):
@@ -170,11 +197,3 @@ class Player(GameObject):
         bomb.position.x = position[0]
         bomb.position.y = position[1]
         world.bombs.add_node(bomb)
-
-
-class Powerup(GameObject):
-    def __init__(self, name=None, color=(0, 100, 100), *args, **kwargs):
-        sprite = PowerupSprite(name, color)
-        shape = Rectangle(0, 0, 1, 1)
-        super().__init__(shape, sprite, *args, **kwargs)
-
