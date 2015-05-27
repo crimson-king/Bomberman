@@ -55,6 +55,8 @@ class World(NodeGroup):
         for player in self.players:
             for wall in self.walls:
                 physics.collides(player, wall, resolve=True)
+            for d_wall in self.destructible_walls:
+                physics.collides(player, d_wall, resolve=True)
 
 
 class GameState(State):
