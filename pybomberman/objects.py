@@ -102,14 +102,12 @@ class DestructibleWall(GameObject):
 
     def destroy(self, world):
         random_number = randint(0, 19)
-        if random_number > 3:  # 80% for bonus NOT dropping
-            self.parent.remove_node(self)
-        elif random_number == 0:  #  bomb range - 0, amount - 1, speed - 2, immortality - 3
-            powerup = Powerup(self, random_number)
+        if random_number < 4:  # 20% that the powerup will spawn
+            powerup = Powerup(self, random_number)  # bomb range - 0, amount - 1, speed - 2, immortality - 3
             powerup.position.x = self.position[0]
             powerup.position.y = self.position[1]
             world.destructible_walls.add_node(powerup)
-            self.parent.remove_node(self)
+        self.parent.remove_node(self)
 
 
 class Powerup(GameObject):
