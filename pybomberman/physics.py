@@ -1,3 +1,4 @@
+"""Physics of the game"""
 import math
 
 from pybomberman.objects import GameObject
@@ -5,11 +6,13 @@ from pybomberman.shapes import Shape, Rectangle
 
 
 def raise_not_impl(shape: Shape, other: Shape):
+    """Raises an error"""
     raise NotImplementedError(
         'collision for {} not implemented'.format((shape, other)))
 
 
 def collides_rect(rect: Rectangle, other: Rectangle):
+    """Checks if two rectangles collide with each other"""
     return rect.x < other.x + other.width \
            and rect.x + rect.width > other.x \
            and rect.y < other.y + other.height \
@@ -48,6 +51,7 @@ def collides(obj: GameObject, other: GameObject, resolve: bool=False) -> bool:
 
 
 def resolve_collision_rect(obj: GameObject, other: GameObject):
+    """Resolves the collision of rectangles"""
     obj_center_x = obj.shape.x + obj.shape.width * .5
     obj_center_y = obj.shape.y + obj.shape.height * .5
 
