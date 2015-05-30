@@ -1,13 +1,17 @@
+"""A controller"""
 from framework.input import NormalAction, InitialAction
 from pybomberman.objects import Player
 
 
 class Controller:
+    """Abstract controller"""
     def update(self, dt):
+        """Abstract update"""
         pass
 
 
 class HumanController(Controller):
+    """Actual implementation of a controller"""
     def __init__(self, player: Player, world: 'World'):
         self.player = player
         self.world = world
@@ -19,6 +23,7 @@ class HumanController(Controller):
         self.action_right = NormalAction()
 
     def update(self, dt):
+        """Handles velocity and action"""
         self.player.velocity.x = \
             self.action_right.active() - self.action_left.active()
         self.player.velocity.y = \

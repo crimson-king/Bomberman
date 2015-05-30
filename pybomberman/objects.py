@@ -1,3 +1,4 @@
+"""All game objects"""
 from itertools import repeat
 
 import pygame
@@ -14,6 +15,7 @@ from framework.scene import Node
 from random import randint
 
 class GameObject(Node):
+    """Standard game object class"""
     def __init__(self, shape: Shape, sprite: Sprite, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.shape = shape
@@ -23,10 +25,12 @@ class GameObject(Node):
         self.speed = 2
 
     def draw(self, canvas: Surface, offset=(0, 0)):
+        """Draws itself"""
         dest = Rect(self.sprite.rect).move((offset + self.position) * PPM)
         canvas.blit(self.sprite.image, dest)
 
     def update(self, dt):
+        """Updates itself if it has moved"""
         if self.velocity == (0, 0):
             return
 
@@ -35,6 +39,7 @@ class GameObject(Node):
 
 
 class WallSprite(Sprite):
+    """Sprite of wall"""
     def __init__(self):
         super().__init__()
         self.image = pygame.Surface((PPM, PPM))
@@ -43,6 +48,7 @@ class WallSprite(Sprite):
 
 
 class DestructibleWallSprite(Sprite):
+    """Sprite of destructible wall"""
     def __init__(self):
         super().__init__()
         self.image = pygame.Surface((PPM, PPM))
@@ -51,6 +57,7 @@ class DestructibleWallSprite(Sprite):
 
 
 class BombSprite(Sprite):
+    """Sprite of bomb"""
     def __init__(self):
         super().__init__()
         self.image = pygame.Surface((PPM, PPM))
@@ -59,6 +66,7 @@ class BombSprite(Sprite):
 
 
 class FireSprite(Sprite):
+    """Sprite of fire"""
     def __init__(self):
         super().__init__()
         self.image = pygame.Surface((PPM, PPM))
@@ -67,6 +75,7 @@ class FireSprite(Sprite):
 
 
 class PlayerSprite(Sprite):
+    """Sprite of player"""
     def __init__(self):
         super().__init__()
         self.image = pygame.Surface((PPM * .5, PPM * .5))
@@ -75,6 +84,7 @@ class PlayerSprite(Sprite):
 
 
 class PowerupSprite(Sprite):
+    """Sprite of powerup."""
     def __init__(self, name):
         super().__init__()
         self.image = pygame.Surface((PPM, PPM))
@@ -90,17 +100,20 @@ class PowerupSprite(Sprite):
 
 
 class Wall(GameObject):
+    """Wall. Unbowed. Unbent. Unbroken."""
     def __init__(self, sprite=WallSprite(), *args, **kwargs):
         shape = Rectangle(0, 0, 1, 1)
         super().__init__(shape, sprite, *args, **kwargs)
 
 
 class DestructibleWall(GameObject):
+    """Wall that can be destroyed"""
     def __init__(self, sprite=DestructibleWallSprite(), *args, **kwargs):
         shape = Rectangle(0, 0, 1, 1)
         super().__init__(shape, sprite, *args, **kwargs)
 
     def destroy(self, world):
+        """Destroys the wall and has a small chance of spawning powerup"""
         random_number = randint(0, 19)
         if random_number < 4:  # 20% that the powerup will spawn
             powerup = Powerup(self, random_number)  # bomb range - 0, amount - 1, speed - 2, immortality - 3
@@ -111,6 +124,7 @@ class DestructibleWall(GameObject):
 
 
 class Powerup(GameObject):
+    """Powerup class"""
     def __init__(self, world: 'World', name=None, *args, **kwargs):
         sprite = PowerupSprite(name)
         shape = Rectangle(0, 0, 1, 1)
@@ -119,6 +133,7 @@ class Powerup(GameObject):
 
 
 class Fire(GameObject):
+    """Fire class"""
     def __init__(self, owner: 'Player', sprite=FireSprite(), *args,
                  **kwargs):
         shape = Rectangle(0, 0, 1, 1)
@@ -128,12 +143,14 @@ class Fire(GameObject):
         self.time = 1
 
     def update(self, dt):
+        """Burn baby burn"""
         self.time -= dt
         if self.time <= 0:
             self.parent.remove_node(self)
 
 
 class Bomb(GameObject):
+    """Bomb class"""
     def __init__(self, owner: 'Player', world: 'World', sprite=BombSprite(),
                  *args, **kwargs):
         shape = Rectangle(0, 0, 1, 1)
@@ -144,13 +161,15 @@ class Bomb(GameObject):
         self.range = owner.bomb_range
         self.time = 3
 
-    def update(self, dt):
-        self.time -= dt
+    def update(self, delta_time):
+        """Checks the time it has left to detonate"""
+        self.time -= delta_time
         if self.time <= 0:
             self.detonate()
             self.parent.remove_node(self)
 
     def detonate(self):
+        """Now I am become Death, the Destroyer of Worlds."""
         right = zip(
             range(int(self.position.x) + 1, self.world.width),
             repeat(int(self.position.y)))
@@ -174,6 +193,7 @@ class Bomb(GameObject):
                 self.spawn_fire(field)
 
     def spawn_fire(self, field):
+        """Spawns fire objects"""
         fire = Fire(self.owner)
         fire.position.x = field[0]
         fire.position.y = field[1]
@@ -181,6 +201,7 @@ class Bomb(GameObject):
 
 
 class Player(GameObject):
+    """Player class"""
     def __init__(self, sprite=PlayerSprite(), *args, **kwargs):
         shape = Rectangle(0, 0, .5, .5)
         super().__init__(shape, sprite, *args, **kwargs)
@@ -191,6 +212,7 @@ class Player(GameObject):
         self.bomb_amount = 1
 
     def spawn_bomb(self, world: 'World', position):
+        """Places a bomb on player position"""
         bomb = Bomb(self, world)
         bomb.position.x = position[0]
         bomb.position.y = position[1]

@@ -1,3 +1,4 @@
+"""What a wonderful world."""
 import pygame
 
 from framework import input_manager, state_manager
@@ -13,6 +14,7 @@ from pybomberman.objects import Wall, Player, DestructibleWall
 
 
 class World(NodeGroup):
+    """Contains node groups with objects"""
     def __init__(self, width: int, height: int,
                  *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -47,9 +49,11 @@ class World(NodeGroup):
                 self.destructible_walls.add_node(d_wall)
 
     def draw(self, canvas, offset=(0, 0)):
+        """Draws itself"""
         super().draw(canvas, offset)
 
     def update(self, dt):
+        """Updates and sets collisions"""
         super().update(dt)
 
         for player in self.players:
@@ -60,6 +64,7 @@ class World(NodeGroup):
 
 
 class GameState(State):
+    """Game State"""
     def __init__(self):
         self.world = World(9, 9)
         self.world.position.x = \
@@ -76,6 +81,7 @@ class GameState(State):
         self.escape_action = InitialAction()
 
     def resume(self):
+        """Resumes the state of the game"""
         input_manager.map_action(pygame.K_ESCAPE, self.escape_action)
 
         for i, controller in enumerate(self.controllers):
@@ -94,16 +100,20 @@ class GameState(State):
         input_manager.reset()
 
     def pause(self):
+        """Pauses the game"""
         input_manager.clear()
 
     def handle_input(self, event):
+        """Handles user input"""
         input_manager.handle_input(event)
 
     def handle_draw(self, canvas):
+        """Draws the game"""
         canvas.fill((0x33, 0x33, 0x33))
         self.world.draw(canvas)
 
     def handle_update(self, dt):
+        """Updates the game, world and controllers"""
         if self.escape_action.active():
             state_manager.pop()
 
