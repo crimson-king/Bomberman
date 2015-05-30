@@ -5,8 +5,8 @@ class Node:
     """Class for handling objects' actual display"""
     def __init__(self, x=0, y=0):
         self.position = Vector2()
-        self.position.x = x
-        self.position.y = y
+        self.position.pos_x = x
+        self.position.pos_y = y
 
         self.parent = None
 

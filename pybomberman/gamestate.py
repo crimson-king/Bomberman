@@ -34,18 +34,18 @@ class World(NodeGroup):
         self.destructible_walls = NodeGroup()
         self.add_node(self.destructible_walls)
 
-        for w in range(width >> 1):
-            for h in range(height >> 1):
+        for wid in range(width >> 1):
+            for hei in range(height >> 1):
                 wall = Wall()
-                wall.position.x = 2 * w + 1
-                wall.position.y = 2 * h + 1
+                wall.position.pos_x = 2 * wid + 1
+                wall.position.pos_y = 2 * hei + 1
                 self.walls.add_node(wall)
 
-        for w in range(width >> 1):
-            for h in range(height >> 1):
+        for wid in range(width >> 1):
+            for hei in range(height >> 1):
                 d_wall = DestructibleWall()
-                d_wall.position.x = 2 * w + 2
-                d_wall.position.y = 2 * h
+                d_wall.position.pos_x = 2 * wid + 2
+                d_wall.position.pos_y = 2 * hei
                 self.destructible_walls.add_node(d_wall)
 
     def draw(self, canvas, offset=(0, 0)):
@@ -67,9 +67,9 @@ class GameState(State):
     """Game State"""
     def __init__(self):
         self.world = World(9, 9)
-        self.world.position.x = \
+        self.world.position.pos_x = \
             (config.resolution[0] / PPM - self.world.width) * .5
-        self.world.position.y = \
+        self.world.position.pos_y = \
             (config.resolution[1] / PPM - self.world.height) * .5
 
         self.controllers = [HumanController(Player(), self.world)
@@ -87,7 +87,7 @@ class GameState(State):
         for i, controller in enumerate(self.controllers):
             player_config = config.players[i]
             input_manager.map_action(
-                player_config.key_binding.up, controller.action_up)
+                player_config.key_binding.upward, controller.action_up)
             input_manager.map_action(
                 player_config.key_binding.down, controller.action_down)
             input_manager.map_action(

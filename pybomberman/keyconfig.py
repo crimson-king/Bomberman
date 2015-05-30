@@ -35,7 +35,7 @@ class KeyConfigState(State):
                             ('Up key: ' +
                              pygame.key.name(
                                  config.player_key_configs[self.current_player]
-                                     .up), self.select_key),
+                                     .upward), self.select_key),
                             ('Down key: ' +
                              pygame.key.name(
                                  config.player_key_configs[self.current_player]
@@ -83,7 +83,7 @@ class KeyConfigState(State):
         self.items[1].text = 'Action: ' + pygame.key.name(
             config.player_key_configs[self.current_player].action)
         self.items[2].text = 'Up key: ' + pygame.key.name(
-            config.player_key_configs[self.current_player].up)
+            config.player_key_configs[self.current_player].upward)
         self.items[3].text = 'Down key: ' + pygame.key.name(
             config.player_key_configs[self.current_player].down)
         self.items[4].text = 'Left key: ' + pygame.key.name(
@@ -96,7 +96,7 @@ class KeyConfigState(State):
         if self.selected == 1:
             config.player_key_configs[self.current_player].action = key
         elif self.selected == 2:
-            config.player_key_configs[self.current_player].up = key
+            config.player_key_configs[self.current_player].upward = key
         elif self.selected == 3:
             config.player_key_configs[self.current_player].down = key
         elif self.selected == 4:

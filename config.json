@@ -10,7 +10,7 @@
                 "left": 276,
                 "down": 274,
                 "right": 275,
-                "up": 273,
+                "upward": 273,
                 "action": 13
             }
         },
@@ -19,7 +19,7 @@
                 "left": 97,
                 "down": 115,
                 "right": 100,
-                "up": 119,
+                "upward": 119,
                 "action": 32
             }
         },
@@ -28,7 +28,7 @@
                 "left": 276,
                 "down": 274,
                 "right": 275,
-                "up": 273,
+                "upward": 273,
                 "action": 32
             }
         },
@@ -37,7 +37,7 @@
                 "left": 276,
                 "down": 274,
                 "right": 275,
-                "up": 273,
+                "upward": 273,
                 "action": 32
             }
         }

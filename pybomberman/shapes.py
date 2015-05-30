@@ -6,39 +6,42 @@ from pygame.math import Vector2
 
 
 class Shape:
+    def __init__(self):
+        pass
+
     """Abstract shape class"""
-    def move(self, x=0, y=0):
+    def move(self, pos_x=0, pos_y=0):
         """Abstract move method"""
         raise NotImplementedError
 
 
 class Rectangle(Shape):
     """Any quadrilateral with four right angles"""
-    def __init__(self, x=0, y=0, width=0, height=0):
+    def __init__(self, pos_x=0, pos_y=0, width=0, height=0):
         self.position = Vector2()
-        self.position.x = x
-        self.position.y = y
+        self.position.x = pos_x
+        self.position.y = pos_y
         self.size = Vector2()
         self.size.x = width
         self.size.y = height
 
     @property
-    def x(self):
+    def pos_x(self):
         """Returns x"""
         return self.position.x
 
-    @x.setter
-    def x(self, value):
+    @pos_x.setter
+    def pos_x(self, value):
         """Sets x"""
         self.position.x = value
 
     @property
-    def y(self):
+    def pos_y(self):
         """Returns y"""
         return self.position.y
 
-    @y.setter
-    def y(self, value):
+    @pos_y.setter
+    def pos_y(self, value):
         """Sets y"""
         self.position.y = value
 
@@ -68,13 +71,13 @@ class Rectangle(Shape):
         return self.position + self.size * .5
 
     @center.setter
-    def center(self, x: Real, y: Real):
+    def center(self, pos_x: Real, pos_y: Real):
         """Sets the center"""
-        self.position.set(x - .5 * self.width, y - .5 * self.height)
+        self.position.set(pos_x - .5 * self.width, pos_y - .5 * self.height)
 
-    def move(self, x: Real=0, y: Real=0):
+    def move(self, pos_x: Real=0, pos_y: Real=0):
         """Moves the object"""
-        self.position += (x, y)
+        self.position += (pos_x, pos_y)
 
     def __repr__(self):
         """Returns weird representation of the object"""

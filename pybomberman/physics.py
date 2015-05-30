@@ -13,10 +13,10 @@ def raise_not_impl(shape: Shape, other: Shape):
 
 def collides_rect(rect: Rectangle, other: Rectangle):
     """Checks if two rectangles collide with each other"""
-    return rect.x < other.x + other.width \
-           and rect.x + rect.width > other.x \
-           and rect.y < other.y + other.height \
-           and rect.y + rect.height > other.y
+    return rect.pos_x < other.pos_x + other.width \
+           and rect.pos_x + rect.width > other.pos_x \
+           and rect.pos_y < other.pos_y + other.height \
+           and rect.pos_y + rect.height > other.pos_y
 
 
 def collides(obj: GameObject, other: GameObject, resolve: bool=False) -> bool:
@@ -37,11 +37,11 @@ def collides(obj: GameObject, other: GameObject, resolve: bool=False) -> bool:
             obj.shape.position -= obj.position
             other.shape.position -= other.position
 
-            obj.position.x += obj.shape.position.x
-            obj.position.y += obj.shape.position.y
+            obj.position.pos_x += obj.shape.position.pos_x
+            obj.position.pos_y += obj.shape.position.pos_y
 
-            obj.shape.position.x = 0
-            obj.shape.position.y = 0
+            obj.shape.position.pos_x = 0
+            obj.shape.position.pos_y = 0
 
             return result
         else:

@@ -52,7 +52,7 @@ class DestructibleWallSprite(Sprite):
     def __init__(self):
         super().__init__()
         self.image = pygame.Surface((PPM, PPM))
-        self.image.fill((139,69,19))
+        self.image.fill((139, 69, 19))
         self.rect = self.image.get_rect()
 
 
@@ -116,10 +116,10 @@ class DestructibleWall(GameObject):
         """Destroys the wall and has a small chance of spawning powerup"""
         random_number = randint(0, 19)
         if random_number < 4:  # 20% that the powerup will spawn
-            powerup = Powerup(self, random_number)  # bomb range - 0, amount - 1, speed - 2, immortality - 3
-            powerup.position.x = self.position[0]
-            powerup.position.y = self.position[1]
-            world.destructible_walls.add_node(powerup)
+            powerup = Powerup(self, random_number)  # bomb range - 0
+            powerup.position.pos_x = self.position[0]  # amount - 1
+            powerup.position.pos_y = self.position[1]  # speed - 2
+            world.destructible_walls.add_node(powerup)  # immortality - 3
         self.parent.remove_node(self)
 
 
@@ -171,20 +171,20 @@ class Bomb(GameObject):
     def detonate(self):
         """Now I am become Death, the Destroyer of Worlds."""
         right = zip(
-            range(int(self.position.x) + 1, self.world.width),
-            repeat(int(self.position.y)))
+            range(int(self.position.pos_x) + 1, self.world.width),
+            repeat(int(self.position.pos_y)))
         left = zip(
-            range(int(self.position.x) - 1, -1, -1),
-            repeat(int(self.position.y)))
-        up = zip(
-            repeat(int(self.position.x)),
-            range(int(self.position.y) - 1, -1, -1))
+            range(int(self.position.pos_x) - 1, -1, -1),
+            repeat(int(self.position.pos_y)))
+        upward = zip(
+            repeat(int(self.position.pos_x)),
+            range(int(self.position.pos_y) - 1, -1, -1))
         down = zip(
-            repeat(int(self.position.x)),
-            range(int(self.position.y) + 1, self.world.height)
+            repeat(int(self.position.pos_x)),
+            range(int(self.position.pos_y) + 1, self.world.height)
         )
-        here = int(self.position.x), int(self.position.y)
-        for fields in [here], left, right, up, down:
+        here = int(self.position.pos_x), int(self.position.pos_y)
+        for fields in [here], left, right, upward, down:
             for field in fields:
                 # check if bomb may be placed here
                 if field[0] % 2 == 1 and field[1] % 2 == 1:  # wall
@@ -195,8 +195,8 @@ class Bomb(GameObject):
     def spawn_fire(self, field):
         """Spawns fire objects"""
         fire = Fire(self.owner)
-        fire.position.x = field[0]
-        fire.position.y = field[1]
+        fire.position.pos_x = field[0]
+        fire.position.pos_y = field[1]
         self.world.bombs.add_node(fire)
 
 
@@ -214,6 +214,6 @@ class Player(GameObject):
     def spawn_bomb(self, world: 'World', position):
         """Places a bomb on player position"""
         bomb = Bomb(self, world)
-        bomb.position.x = position[0]
-        bomb.position.y = position[1]
+        bomb.position.pos_x = position[0]
+        bomb.position.pos_y = position[1]
         world.bombs.add_node(bomb)
