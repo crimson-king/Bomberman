@@ -4,19 +4,24 @@ import pygame
 
 
 class Action:
+    """Pseudo-abstract class for action"""
     def __bool__(self):
         return self.active()
 
     def active(self):
+        """Is it active?"""
         raise NotImplementedError
 
     def press(self):
+        """Pressing"""
         pass
 
     def release(self):
+        """Releasing"""
         pass
 
     def reset(self):
+        """Resetting"""
         pass
 
 
