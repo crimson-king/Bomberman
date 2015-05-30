@@ -37,11 +37,11 @@ def collides(obj: GameObject, other: GameObject, resolve: bool=False) -> bool:
             obj.shape.position -= obj.position
             other.shape.position -= other.position
 
-            obj.position.pos_x += obj.shape.position.pos_x
-            obj.position.pos_y += obj.shape.position.pos_y
+            obj.position.x += obj.shape.position.x
+            obj.position.y += obj.shape.position.y
 
-            obj.shape.position.pos_x = 0
-            obj.shape.position.pos_y = 0
+            obj.shape.position.x = 0
+            obj.shape.position.y = 0
 
             return result
         else:
@@ -52,11 +52,11 @@ def collides(obj: GameObject, other: GameObject, resolve: bool=False) -> bool:
 
 def resolve_collision_rect(obj: GameObject, other: GameObject):
     """Resolves the collision of rectangles"""
-    obj_center_x = obj.shape.x + obj.shape.width * .5
-    obj_center_y = obj.shape.y + obj.shape.height * .5
+    obj_center_x = obj.shape.pos_x + obj.shape.width * .5
+    obj_center_y = obj.shape.pos_y + obj.shape.height * .5
 
-    other_center_x = other.shape.x + other.shape.width * .5
-    other_center_y = other.shape.y + other.shape.height * .5
+    other_center_x = other.shape.pos_x + other.shape.width * .5
+    other_center_y = other.shape.pos_y + other.shape.height * .5
 
     dx = (obj_center_x - other_center_x) / (other.shape.width * .5)
     dy = (obj_center_y - other_center_y) / (other.shape.height * .5)
@@ -65,21 +65,21 @@ def resolve_collision_rect(obj: GameObject, other: GameObject):
 
     if math.fabs(adx - ady) < .1:
         if dx < 0:
-            obj.shape.x = other.shape.x - obj.shape.width
+            obj.shape.pos_x = other.shape.pos_x - obj.shape.width
         else:
-            obj.shape.x = other.shape.x + other.shape.width
+            obj.shape.pos_x = other.shape.pos_x + other.shape.width
 
         if dy > 0:
-            obj.shape.y = other.shape.y + other.shape.height
+            obj.shape.pos_y = other.shape.pos_y + other.shape.height
         else:
-            obj.shape.y = other.shape.y - obj.shape.height
+            obj.shape.pos_y = other.shape.pos_y - obj.shape.height
     elif adx > ady:
         if dx < 0:
-            obj.shape.x = other.shape.x - obj.shape.width
+            obj.shape.pos_x = other.shape.pos_x - obj.shape.width
         else:
-            obj.shape.x = other.shape.x + other.shape.width
+            obj.shape.pos_x = other.shape.pos_x + other.shape.width
     else:
         if dy > 0:
-            obj.shape.y = other.shape.y + other.shape.height
+            obj.shape.pos_y = other.shape.pos_y + other.shape.height
         else:
-            obj.shape.y = other.shape.y - obj.shape.height
+            obj.shape.pos_y = other.shape.pos_y - obj.shape.height

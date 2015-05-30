@@ -117,8 +117,8 @@ class DestructibleWall(GameObject):
         random_number = randint(0, 19)
         if random_number < 4:  # 20% that the powerup will spawn
             powerup = Powerup(self, random_number)  # bomb range - 0
-            powerup.position.pos_x = self.position[0]  # amount - 1
-            powerup.position.pos_y = self.position[1]  # speed - 2
+            powerup.position.x = self.position[0]  # amount - 1
+            powerup.position.y = self.position[1]  # speed - 2
             world.destructible_walls.add_node(powerup)  # immortality - 3
         self.parent.remove_node(self)
 
@@ -171,19 +171,19 @@ class Bomb(GameObject):
     def detonate(self):
         """Now I am become Death, the Destroyer of Worlds."""
         right = zip(
-            range(int(self.position.pos_x) + 1, self.world.width),
-            repeat(int(self.position.pos_y)))
+            range(int(self.position.x) + 1, self.world.width),
+            repeat(int(self.position.y)))
         left = zip(
-            range(int(self.position.pos_x) - 1, -1, -1),
-            repeat(int(self.position.pos_y)))
+            range(int(self.position.x) - 1, -1, -1),
+            repeat(int(self.position.y)))
         upward = zip(
-            repeat(int(self.position.pos_x)),
-            range(int(self.position.pos_y) - 1, -1, -1))
+            repeat(int(self.position.x)),
+            range(int(self.position.y) - 1, -1, -1))
         down = zip(
-            repeat(int(self.position.pos_x)),
-            range(int(self.position.pos_y) + 1, self.world.height)
+            repeat(int(self.position.x)),
+            range(int(self.position.y) + 1, self.world.height)
         )
-        here = int(self.position.pos_x), int(self.position.pos_y)
+        here = int(self.position.x), int(self.position.y)
         for fields in [here], left, right, upward, down:
             for field in fields:
                 # check if bomb may be placed here
@@ -195,8 +195,8 @@ class Bomb(GameObject):
     def spawn_fire(self, field):
         """Spawns fire objects"""
         fire = Fire(self.owner)
-        fire.position.pos_x = field[0]
-        fire.position.pos_y = field[1]
+        fire.position.x = field[0]
+        fire.position.y = field[1]
         self.world.bombs.add_node(fire)
 
 
@@ -214,6 +214,6 @@ class Player(GameObject):
     def spawn_bomb(self, world: 'World', position):
         """Places a bomb on player position"""
         bomb = Bomb(self, world)
-        bomb.position.pos_x = position[0]
-        bomb.position.pos_y = position[1]
+        bomb.position.x = position[0]
+        bomb.position.y = position[1]
         world.bombs.add_node(bomb)

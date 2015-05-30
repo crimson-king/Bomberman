@@ -3,10 +3,10 @@ from pygame.math import Vector2
 
 class Node:
     """Class for handling objects' actual display"""
-    def __init__(self, x=0, y=0):
+    def __init__(self, pos_x=0, pos_y=0):
         self.position = Vector2()
-        self.position.pos_x = x
-        self.position.pos_y = y
+        self.position.x = pos_x
+        self.position.y = pos_y
 
         self.parent = None
 

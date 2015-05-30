@@ -24,13 +24,13 @@ class HumanController(Controller):
 
     def update(self, dt):
         """Handles velocity and action"""
-        self.player.velocity.pos_x = \
+        self.player.velocity.x = \
             self.action_right.active() - self.action_left.active()
-        self.player.velocity.pos_y = \
+        self.player.velocity.y = \
             - (self.action_up.active() - self.action_down.active())
 
         if self.action_action.active():
             position = \
-                int(self.player.position.pos_x + self.player.shape.width * .5), \
-                int(self.player.position.pos_y + self.player.shape.height * .5)
+                int(self.player.position.x + self.player.shape.width * .5), \
+                int(self.player.position.y + self.player.shape.height * .5)
             self.player.spawn_bomb(self.world, position)

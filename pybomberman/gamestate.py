@@ -37,15 +37,15 @@ class World(NodeGroup):
         for wid in range(width >> 1):
             for hei in range(height >> 1):
                 wall = Wall()
-                wall.position.pos_x = 2 * wid + 1
-                wall.position.pos_y = 2 * hei + 1
+                wall.position.x = 2 * wid + 1
+                wall.position.y = 2 * hei + 1
                 self.walls.add_node(wall)
 
         for wid in range(width >> 1):
             for hei in range(height >> 1):
                 d_wall = DestructibleWall()
-                d_wall.position.pos_x = 2 * wid + 2
-                d_wall.position.pos_y = 2 * hei
+                d_wall.position.x = 2 * wid + 2
+                d_wall.position.y = 2 * hei
                 self.destructible_walls.add_node(d_wall)
 
     def draw(self, canvas, offset=(0, 0)):
@@ -67,9 +67,9 @@ class GameState(State):
     """Game State"""
     def __init__(self):
         self.world = World(9, 9)
-        self.world.position.pos_x = \
+        self.world.position.x = \
             (config.resolution[0] / PPM - self.world.width) * .5
-        self.world.position.pos_y = \
+        self.world.position.y = \
             (config.resolution[1] / PPM - self.world.height) * .5
 
         self.controllers = [HumanController(Player(), self.world)
