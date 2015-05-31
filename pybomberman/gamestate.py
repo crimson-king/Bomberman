@@ -10,7 +10,7 @@ from pybomberman import PPM
 from pybomberman import physics
 from pybomberman.config import config
 from pybomberman.controllers import HumanController
-from pybomberman.objects import Wall, Player, DestructibleWall
+from pybomberman.objects import Wall, Player
 
 
 class World(NodeGroup):
@@ -41,12 +41,12 @@ class World(NodeGroup):
                 wall.position.y = 2 * hei + 1
                 self.walls.add_node(wall)
 
-        for wid in range(width >> 1):
-            for hei in range(height >> 1):
-                d_wall = DestructibleWall()
-                d_wall.position.x = 2 * wid + 2
-                d_wall.position.y = 2 * hei
-                self.destructible_walls.add_node(d_wall)
+        # for wid in range(width >> 1):
+        #     for hei in range(height >> 1):
+        #         d_wall = DestructibleWall()
+        #         d_wall.position.x = 2 * wid + 2
+        #         d_wall.position.y = 2 * hei
+        #         self.destructible_walls.add_node(d_wall)
 
     def draw(self, canvas, offset=(0, 0)):
         """Draws itself"""
