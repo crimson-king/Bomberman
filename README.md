@@ -69,12 +69,12 @@ PyBomberman may be started by running script from project root:
   * **physics** holds simple methods for `Shape`s collision checking
    and resolution.
   * **objects** has `GameObject` extending `framework.scene.Node`
-   with `Shape` and other variables such as `velocity`, or `speed`.
+   with `Shape` and other variables such as `velocity` or `speed`.
    It is responsible for `update`ing and `draw`ing itself to PyGame's Surface.
   * **config** contains configuration classes loaded from and saved
    to `config.json` file. Number of players,
    their key bindings and screen size can be found here.
-  * **menu** got some implementation of `MenuState` to use with
+  * **menu** has got some implementation of `MenuState` to use with
    `framework.input.InputManager` and `Item`
     which should be named `MenuItem` instead.
     After serious refactoring (or even rewriting)
@@ -83,8 +83,7 @@ PyBomberman may be started by running script from project root:
    __controlling__ `GameObject`s. This abstraction layer enables easy
    integration of AI algorithms or player's input.
     Latter is provided with `HumanController` in the same submodule.
-  * **facade** is definitely not a Facade Design Pattern implementation.
-   No idea what and why it is here.
+  * **facade** provides an easy access to the game system.
   * **utils** submodule. What to explain here?
    Well, if PyGame's Rectangle would use floats instead of ints,
    it wouldn't be neccessary.
@@ -94,16 +93,18 @@ PyBomberman may be started by running script from project root:
 
 ## Assembling complete game from framework and pybomberman
 
-Every computer game needs window (technically we can assume that terminal is a
+Every computer game needs a window (technically we can assume that terminal is a
 window - and fullscreen window is still a window, right?)
 with graphics inside (ASCII characters are also graphics!)
-that is changing every while dependently on user's input.
+that is constantly changing dependently on user's input.
 All of this is provided with `Game` class.
 
 We want to make a simple menu, where user will be able to start the game,
-configure it, or exit as he wish.
+configure it, or exit whenever he feels like it.
+Maybe because their graphic card is overheating or something.
+Yeah, I see no other reason.
 Menu and 'MainGame' will be implemented as `State`s,
- so we will use `StateGameHandler` and `StateManager`.
+so we will use `StateGameHandler` and `StateManager`.
 
 This is exactly what we're looking for:
 ```python
@@ -115,7 +116,7 @@ When user wants to quit, on exit option selected, `state_manager.pop()`
 method may be used. Framework will automagically close game window
 when there's nothing on state stack.
 
-When user wants to play game, on play option selected,
+When user wants to play the game, on play option selected,
 `state_manager.push(GameState())` shall be invoked
 and Framework will present new state to the user.
 
@@ -124,7 +125,7 @@ and Framework will present new state to the user.
 
 On initialization, it creates `World` instance, where all the `GameObject`s,
 such as players, walls or even bombs, will be stored.
-Controllers are also instantiated here, but they are not stored int `World`.
+Controllers are also instantiated here, but they are not stored in `World`.
 
 Since we created `InputManager`, `handle_input` method is as simple as
 forwarding input events to its instance.
@@ -132,9 +133,11 @@ forwarding input events to its instance.
 Every `handle_update`, all the `controller`s and `World` are being updated.
 Collisions between players with walls are resolved,
 but bombs with players and destructible walls are only checked.
-And if player is ablaze by blown bomb, they (and their controllers)
+And if a player is ablaze by a bomb that has just exploded, they (and their controllers)
 are simply removed from the game.
+(Unless they're immortal. Which they can temporarily be by picking up a specific powerup.
+Well, in the future it will be implemented. Perhaps.)
 Same goes for destructible walls, but here,
-a powerup might be left in `World`.
+a powerup might (20%) be left in `World`.
 
-Game is active until only one (or even zero) player left in battle.
+Game is active as long as >= 2 players have all their limbs.
