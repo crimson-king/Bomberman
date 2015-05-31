@@ -45,3 +45,14 @@ PyBomberman may be started by running script from project root:
   * **scene** includes `Node` and `NodeGroup` for managing scene graph. These should be `update`d and `draw`n in appropriate `GameHandler` events.
   * **input** allows easy use of pygame key input (although it can be easily adapted to handle other input as well). `Action` interface along with straightforward `NormalAction` and almost as trivial `InitialAction` managed by `InputManager` may be used as deadly simple, yet powerful and extensible input processor.
   * **\__init__** lets you `from framework import state_manager` to make some state pushing and `from framework import input_manager` if you want to make use of **input** submodule.
+
+* **pybomberman**
+  * **shape** contains `Rectangle` implementation of `Shape` interface. You know what rectangle is, right?
+  * **physics** holds simple methods for `Shape`s collision checking and resolution.
+  * **objects** has `GameObject` extending `framework.scene.Node` with `Shape` and other variables such as `velocity`, or `speed`. It is responsible for `update`ing and `draw`ing itself to PyGame's Surface.
+  * **config** contains configuration classes loaded from and saved to `config.json` file. Number of players, their key bindings and screen size can be found here.
+  * **menu** got some implementation of `MenuState` to use with `framework.input.InputManager` and `Item` which should be named `MenuItem` instead. After serious refactoring (or even rewriting) it is intended to be moved to **framework** module.
+  * **controllers** and its `Controller` interface are responsible for __controlling__ `GameObject`s. This abstraction layer enables easy integration of AI algorithms or player's input. Latter is provided with `HumanController` in the same submodule.
+  * **facade** is definitely not a Facade Design Pattern implementation. No idea what and why it is here.
+  * **utils** submodule. What to explain here? Well, if PyGame's Rectangle would use floats instead of ints, it wouldn't be neccessary.
+  * **superpower**? There is no such module, but it would be nice to have its implementation!
