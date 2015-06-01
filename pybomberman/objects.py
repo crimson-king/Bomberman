@@ -246,13 +246,27 @@ class Player(GameObject):
 
         self.kills = 0
 
+        self.bombs = []
+
     def spawn_bomb(self, world: 'World', position):
         """Places a bomb on player position"""
+
+        if len(self.bombs) == self.bomb_amount:
+            return
+
         bomb = Bomb(self, world)
         bomb.position.x = position[0]
         bomb.position.y = position[1]
+        self.bombs.append(bomb)
         world.bombs.add_node(bomb)
 
     def hit(self):
         """Hits player."""
         self.health -= 1
+
+    def update(self, dt):
+        super().update(dt)
+
+        for bomb in self.bombs:
+            if bomb.time <= 0:
+                self.bombs.remove(bomb)
