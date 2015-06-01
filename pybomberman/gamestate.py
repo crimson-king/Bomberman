@@ -15,6 +15,7 @@ from pybomberman.objects import Wall, Player, DestructibleWall
 
 class World(NodeGroup):
     """Contains node groups with objects"""
+
     def __init__(self, width: int, height: int,
                  *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -64,10 +65,17 @@ class World(NodeGroup):
                 physics.collides(player, wall, resolve=True)
             for d_wall in self.destructible_walls:
                 physics.collides(player, d_wall, resolve=True)
+            for fire in self.fire:
+                if physics.collides(player, fire, resolve=False):
+                    player.hit()
+
+            if player.health <= 0:
+                self.players.remove_node(player)
 
 
 class GameState(State):
     """Game State"""
+
     def __init__(self):
         self.world = World(9, 9)
         self.world.position.x = \
@@ -124,6 +132,10 @@ class GameState(State):
             controller.update(dt)
 
         self.world.update(dt)
+
+        for controller in self.controllers:
+            if controller.player.health <= 0:
+                self.controllers.remove(controller)
 
 
 if __name__ == '__main__':
