@@ -104,7 +104,7 @@ class DestructibleWall(GameObject):
     def destroy(self, world):
         """Destroys the wall and has a chance of spawning powerup"""
         if random.random() < .9:  # 20% that the powerup will spawn
-            powerup_cls = random.choice([RangePowerup, SpeedPowerup])
+            powerup_cls = random.choice([BombAmountPowerup, RangePowerup, SpeedPowerup])
             powerup = powerup_cls(self)  # bomb range - 0
             powerup.position.x = self.position[0]  # amount - 1
             powerup.position.y = self.position[1]  # speed - 2
@@ -122,6 +122,15 @@ class Powerup(GameObject):
 
     def collect(self, player: 'Player'):
         raise NotImplementedError
+
+
+class BombAmountPowerup(Powerup):
+    def __init__(self, world, *args, **kwargs):
+        sprite = GenericSprite(os.path.join(ASSETS_PATH, 'bomb.png'))
+        super().__init__(world, sprite, *args, **kwargs)
+
+    def collect(self, player: 'Player'):
+        player.bomb_amount += 1
 
 
 class SpeedPowerup(Powerup):
