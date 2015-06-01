@@ -3,7 +3,7 @@
 import os
 
 
-PPM = 50
+PPM = 64
 
 ASSETS_PATH = os.path.join(os.path.pardir, 'assets')
 print('assets dir:', os.path.realpath(ASSETS_PATH))

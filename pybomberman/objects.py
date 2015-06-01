@@ -37,26 +37,6 @@ class GameObject(Node):
         self.position += self.velocity * self.speed * dt
 
 
-class WallSprite(Sprite):
-    """Sprite of wall"""
-
-    def __init__(self):
-        super().__init__()
-        self.image = pygame.Surface((PPM, PPM))
-        self.image.fill((0, 0, 0xff))
-        self.rect = self.image.get_rect()
-
-
-class DestructibleWallSprite(Sprite):
-    """Sprite of destructible wall"""
-
-    def __init__(self):
-        super().__init__()
-        self.image = pygame.Surface((PPM, PPM))
-        self.image.fill((139, 69, 19))
-        self.rect = self.image.get_rect()
-
-
 class BombSprite(Sprite):
     """Sprite of bomb"""
 
@@ -115,7 +95,9 @@ class Wall(GameObject):
 class DestructibleWall(GameObject):
     """Wall that can be destroyed"""
 
-    def __init__(self, sprite=DestructibleWallSprite(), *args, **kwargs):
+    def __init__(self,
+                 sprite=GenericSprite(os.path.join(ASSETS_PATH, 'd_wall.png')),
+                 *args, **kwargs):
         shape = Rectangle(0, 0, 1, 1)
         super().__init__(shape, sprite, *args, **kwargs)
 
