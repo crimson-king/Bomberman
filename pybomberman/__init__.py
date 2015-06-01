@@ -5,7 +5,7 @@ import os
 
 PPM = 64
 
-ASSETS_PATH = os.path.join(os.path.pardir, 'assets')
+ASSETS_PATH = os.path.join(os.path.curdir, 'assets')
 print('assets dir:', os.path.realpath(ASSETS_PATH))
 
 
