@@ -28,6 +28,9 @@ class World(NodeGroup):
         self.bombs = NodeGroup()
         self.add_node(self.bombs)
 
+        self.fire = NodeGroup()
+        self.add_node(self.fire)
+
         self.players = NodeGroup()
         self.add_node(self.players)
 

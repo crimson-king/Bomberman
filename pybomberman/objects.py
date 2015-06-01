@@ -1,21 +1,21 @@
 """All game objects"""
 from itertools import repeat
+from random import randint
 
-import pygame
 from pygame.math import Vector2
 from pygame.rect import Rect
+
+import pygame
 from pygame.sprite import Sprite
 from pygame import Surface
-
 from pybomberman import PPM
-
 from pybomberman.shapes import Shape, Rectangle
 from framework.scene import Node
 
-from random import randint
 
 class GameObject(Node):
     """Standard game object class"""
+
     def __init__(self, shape: Shape, sprite: Sprite, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.shape = shape
@@ -40,6 +40,7 @@ class GameObject(Node):
 
 class WallSprite(Sprite):
     """Sprite of wall"""
+
     def __init__(self):
         super().__init__()
         self.image = pygame.Surface((PPM, PPM))
@@ -49,6 +50,7 @@ class WallSprite(Sprite):
 
 class DestructibleWallSprite(Sprite):
     """Sprite of destructible wall"""
+
     def __init__(self):
         super().__init__()
         self.image = pygame.Surface((PPM, PPM))
@@ -58,6 +60,7 @@ class DestructibleWallSprite(Sprite):
 
 class BombSprite(Sprite):
     """Sprite of bomb"""
+
     def __init__(self):
         super().__init__()
         self.image = pygame.Surface((PPM, PPM))
@@ -67,6 +70,7 @@ class BombSprite(Sprite):
 
 class FireSprite(Sprite):
     """Sprite of fire"""
+
     def __init__(self):
         super().__init__()
         self.image = pygame.Surface((PPM, PPM))
@@ -76,6 +80,7 @@ class FireSprite(Sprite):
 
 class PlayerSprite(Sprite):
     """Sprite of player"""
+
     def __init__(self):
         super().__init__()
         self.image = pygame.Surface((PPM * .5, PPM * .5))
@@ -85,6 +90,7 @@ class PlayerSprite(Sprite):
 
 class PowerupSprite(Sprite):
     """Sprite of powerup."""
+
     def __init__(self, name):
         super().__init__()
         self.image = pygame.Surface((PPM, PPM))
@@ -101,6 +107,7 @@ class PowerupSprite(Sprite):
 
 class Wall(GameObject):
     """Wall. Unbowed. Unbent. Unbroken."""
+
     def __init__(self, sprite=WallSprite(), *args, **kwargs):
         shape = Rectangle(0, 0, 1, 1)
         super().__init__(shape, sprite, *args, **kwargs)
@@ -108,6 +115,7 @@ class Wall(GameObject):
 
 class DestructibleWall(GameObject):
     """Wall that can be destroyed"""
+
     def __init__(self, sprite=DestructibleWallSprite(), *args, **kwargs):
         shape = Rectangle(0, 0, 1, 1)
         super().__init__(shape, sprite, *args, **kwargs)
@@ -125,6 +133,7 @@ class DestructibleWall(GameObject):
 
 class Powerup(GameObject):
     """Powerup class"""
+
     def __init__(self, world: 'World', name=None, *args, **kwargs):
         sprite = PowerupSprite(name)
         shape = Rectangle(0, 0, 1, 1)
@@ -134,6 +143,7 @@ class Powerup(GameObject):
 
 class Fire(GameObject):
     """Fire class"""
+
     def __init__(self, owner: 'Player', sprite=FireSprite(), *args,
                  **kwargs):
         shape = Rectangle(0, 0, 1, 1)
@@ -151,6 +161,7 @@ class Fire(GameObject):
 
 class Bomb(GameObject):
     """Bomb class"""
+
     def __init__(self, owner: 'Player', world: 'World', sprite=BombSprite(),
                  *args, **kwargs):
         shape = Rectangle(0, 0, 1, 1)
@@ -166,10 +177,13 @@ class Bomb(GameObject):
         self.time -= delta_time
         if self.time <= 0:
             self.detonate()
-            self.parent.remove_node(self)
 
     def detonate(self):
         """Now I am become Death, the Destroyer of Worlds."""
+
+        # remove bomb from world here to avoid circular detonates
+        self.parent.remove_node(self)
+
         right = zip(
             range(int(self.position.x) + 1, self.world.width),
             repeat(int(self.position.y)))
@@ -192,16 +206,31 @@ class Bomb(GameObject):
 
                 self.spawn_fire(field)
 
+                d_wall = None
+                for wall in self.world.destructible_walls:
+                    if field == wall.position:
+                        d_wall = wall
+                        break
+
+                if d_wall:
+                    self.world.destructible_walls.remove_node(d_wall)
+                    break
+
+                for bomb in self.world.bombs:
+                    if field == bomb.position and self is not bomb:
+                        bomb.detonate()
+
     def spawn_fire(self, field):
         """Spawns fire objects"""
         fire = Fire(self.owner)
         fire.position.x = field[0]
         fire.position.y = field[1]
-        self.world.bombs.add_node(fire)
+        self.world.fire.add_node(fire)
 
 
 class Player(GameObject):
     """Player class"""
+
     def __init__(self, sprite=PlayerSprite(), *args, **kwargs):
         shape = Rectangle(0, 0, .5, .5)
         super().__init__(shape, sprite, *args, **kwargs)
