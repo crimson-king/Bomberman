@@ -23,8 +23,14 @@ class World(NodeGroup):
         self.width = width
         self.height = height
 
+        self.powerups = NodeGroup()
+        self.add_node(self.powerups)
+
         self.walls = NodeGroup()
         self.add_node(self.walls)
+
+        self.destructible_walls = NodeGroup()
+        self.add_node(self.destructible_walls)
 
         self.bombs = NodeGroup()
         self.add_node(self.bombs)
@@ -34,9 +40,6 @@ class World(NodeGroup):
 
         self.players = NodeGroup()
         self.add_node(self.players)
-
-        self.destructible_walls = NodeGroup()
-        self.add_node(self.destructible_walls)
 
         for wid in range(width >> 1):
             for hei in range(height >> 1):
@@ -65,6 +68,11 @@ class World(NodeGroup):
                 physics.collides(player, wall, resolve=True)
             for d_wall in self.destructible_walls:
                 physics.collides(player, d_wall, resolve=True)
+
+            for powerup in self.powerups:
+                if physics.collides(player, powerup, resolve=False):
+                    powerup.collect(player)
+                    self.powerups.remove_node(powerup)
             for fire in self.fire:
                 if physics.collides(player, fire, resolve=False):
                     player.hit()

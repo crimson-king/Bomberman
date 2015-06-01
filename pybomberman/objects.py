@@ -1,6 +1,6 @@
 """All game objects"""
+import random
 from itertools import repeat
-from random import randint
 
 from pygame.math import Vector2
 from pygame.rect import Rect
@@ -121,13 +121,13 @@ class DestructibleWall(GameObject):
         super().__init__(shape, sprite, *args, **kwargs)
 
     def destroy(self, world):
-        """Destroys the wall and has a small chance of spawning powerup"""
-        random_number = randint(0, 19)
-        if random_number < 4:  # 20% that the powerup will spawn
-            powerup = Powerup(self, random_number)  # bomb range - 0
+        """Destroys the wall and has a chance of spawning powerup"""
+        if random.random() < .9:  # 20% that the powerup will spawn
+            powerup_cls = random.choice([SpeedPowerup])
+            powerup = powerup_cls(self)  # bomb range - 0
             powerup.position.x = self.position[0]  # amount - 1
             powerup.position.y = self.position[1]  # speed - 2
-            world.destructible_walls.add_node(powerup)  # immortality - 3
+            world.powerups.add_node(powerup)  # immortality - 3
         self.parent.remove_node(self)
 
 
@@ -139,6 +139,16 @@ class Powerup(GameObject):
         shape = Rectangle(0, 0, 1, 1)
         super().__init__(shape, sprite, *args, **kwargs)
         self.world = world
+
+    def collect(self, player: 'Player'):
+        raise NotImplementedError
+
+
+class SpeedPowerup(Powerup):
+    """Powerup that powers player's speed"""
+
+    def collect(self, player: 'Player'):
+        player.speed_level += 1
 
 
 class Fire(GameObject):
@@ -210,15 +220,10 @@ class Bomb(GameObject):
 
                 self.spawn_fire(field)
 
-                d_wall = None
                 for wall in self.world.destructible_walls:
                     if field == wall.position:
-                        d_wall = wall
+                        wall.destroy(self.world)
                         break
-
-                if d_wall:
-                    d_wall.destroy(self.world)
-                    break
 
                 for bomb in self.world.bombs:
                     if field == bomb.position and self is not bomb:
@@ -241,8 +246,8 @@ class Player(GameObject):
 
         self.health = 1
         self.bomb_range = 1
-        self.speed_level = 0
         self.bomb_amount = 1
+        self.speed_level = 0
 
         self.kills = 0
 
@@ -270,3 +275,11 @@ class Player(GameObject):
         for bomb in self.bombs:
             if bomb.time <= 0:
                 self.bombs.remove(bomb)
+
+    @property
+    def speed(self):
+        return 1 + self.speed_level * .25
+
+    @speed.setter
+    def speed(self, value):
+        pass
