@@ -4,7 +4,6 @@ import random
 from itertools import repeat
 
 from pygame.math import Vector2
-from pygame.rect import Rect
 
 import pygame
 from pygame.sprite import Sprite
@@ -27,8 +26,7 @@ class GameObject(Node):
 
     def draw(self, canvas: Surface, offset=(0, 0)):
         """Draws itself"""
-        dest = Rect(self.sprite.rect).move((offset + self.position) * PPM)
-        canvas.blit(self.sprite.image, dest)
+        canvas.blit(self.sprite.image, (offset + self.position) * PPM)
 
     def update(self, dt):
         """Updates itself if it has moved"""
@@ -107,7 +105,9 @@ class GenericSprite(Sprite):
 class Wall(GameObject):
     """Wall. Unbowed. Unbent. Unbroken."""
 
-    def __init__(self, sprite=WallSprite(), *args, **kwargs):
+    def __init__(self,
+                 sprite=GenericSprite(os.path.join(ASSETS_PATH, 'wall.png')),
+                 *args, **kwargs):
         shape = Rectangle(0, 0, 1, 1)
         super().__init__(shape, sprite, *args, **kwargs)
 
