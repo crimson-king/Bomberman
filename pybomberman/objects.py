@@ -9,7 +9,7 @@ from pygame.rect import Rect
 import pygame
 from pygame.sprite import Sprite
 from pygame import Surface
-from pybomberman import PPM
+from pybomberman import PPM, ASSETS_PATH
 from pybomberman.shapes import Shape, Rectangle
 from framework.scene import Node
 
@@ -146,8 +146,7 @@ class SpeedPowerup(Powerup):
     """Powerup that powers player's speed"""
 
     def __init__(self, world, *args, **kwargs):
-        filepath = os.path.join(os.path.pardir, 'assets', 'speed_powerup.png')
-        filepath = os.path.realpath(filepath)
+        filepath = os.path.join(ASSETS_PATH, 'speed_powerup.png')
         sprite = GenericSprite(filepath)
         super().__init__(world, sprite, *args, **kwargs)
 
@@ -159,7 +158,7 @@ class RangePowerup(Powerup):
     """Powerup that extends your fire"""
 
     def __init__(self, world, *args, **kwargs):
-        filepath = os.path.join(os.path.pardir, 'assets', 'bomb.png')
+        filepath = os.path.join(ASSETS_PATH, 'bomb.png')
         sprite = GenericSprite(filepath)
         super().__init__(world, sprite, *args, **kwargs)
 

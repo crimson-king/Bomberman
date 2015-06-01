@@ -1,6 +1,12 @@
 """Init module containing methods to run pybomberman with ease."""
 
+import os
+
+
 PPM = 50
+
+ASSETS_PATH = os.path.join(os.path.pardir, 'assets')
+print('assets dir:', os.path.realpath(ASSETS_PATH))
 
 
 def main():
