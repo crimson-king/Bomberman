@@ -4,10 +4,10 @@ import random
 from itertools import repeat
 
 from pygame.math import Vector2
-
 import pygame
 from pygame.sprite import Sprite
 from pygame import Surface
+
 from pybomberman import PPM, ASSETS_PATH
 from pybomberman.shapes import Shape, Rectangle
 from framework.scene import Node
@@ -226,10 +226,15 @@ class Bomb(GameObject):
 
                 self.spawn_fire(field)
 
+                collision = None
                 for wall in self.world.destructible_walls:
                     if field == wall.position:
+                        collision = wall
                         wall.destroy(self.world)
                         break
+
+                if collision:
+                    break
 
                 for bomb in self.world.bombs:
                     if field == bomb.position and self is not bomb:
