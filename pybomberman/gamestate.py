@@ -119,6 +119,12 @@ class World(NodeGroup):
                 if physics.collides(player, fire, resolve=False):
                     player.hit()
 
+            player.position.x = max(player.position.x, 0)
+            player.position.x = min(player.position.x, self.width - player.shape.width)
+
+            player.position.y = max(player.position.y, 0)
+            player.position.y = min(player.position.y, self.width - player.shape.width)
+
             if player.health <= 0:
                 self.players.remove_node(player)
 
