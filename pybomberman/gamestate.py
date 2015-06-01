@@ -1,6 +1,8 @@
 """What a wonderful world."""
-import pygame
+from itertools import product
+import random
 
+import pygame
 from framework import input_manager, state_manager
 from framework.core import Game
 from framework.input import InitialAction
@@ -41,19 +43,34 @@ class World(NodeGroup):
         self.players = NodeGroup()
         self.add_node(self.players)
 
-        for wid in range(width >> 1):
-            for hei in range(height >> 1):
-                wall = Wall()
-                wall.position.x = 2 * wid + 1
-                wall.position.y = 2 * hei + 1
-                self.walls.add_node(wall)
+        # at this positions walls must not be spawned
+        player_space = (
+            (0, 0), (0, 1), (1, 0),
+            (width - 1, 0), (width - 1, 1), (width - 2, 0),
+            (0, height - 1), (0, height - 2), (1, height - 1),
+            (width - 1, height - 1), (width - 2, height - 1), (width - 1, height - 2)
+        )
 
-        for wid in range(width >> 1):
-            for hei in range(height >> 1):
-                d_wall = DestructibleWall()
-                d_wall.position.x = 2 * wid + 2
-                d_wall.position.y = 2 * hei
-                self.destructible_walls.add_node(d_wall)
+        for pos_x, pos_y in product(range(width), range(height)):
+            if (pos_x, pos_y) in player_space:
+                continue
+            if pos_x % 2 == 1 and pos_y % 2 == 1:  # wall
+                self.add_wall((pos_x, pos_y))
+            else:
+                if random.random() < .8:
+                    self.add_destructible_wall((pos_x, pos_y))
+
+    def add_wall(self, position):
+        wall = Wall()
+        wall.position.x = position[0]
+        wall.position.y = position[1]
+        self.walls.add_node(wall)
+
+    def add_destructible_wall(self, position):
+        wall = DestructibleWall()
+        wall.position.x = position[0]
+        wall.position.y = position[1]
+        self.destructible_walls.add_node(wall)
 
     def draw(self, canvas, offset=(0, 0)):
         """Draws itself"""
