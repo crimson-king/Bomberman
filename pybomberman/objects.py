@@ -235,10 +235,12 @@ class Player(GameObject):
         shape = Rectangle(0, 0, .5, .5)
         super().__init__(shape, sprite, *args, **kwargs)
 
-        self.kills = 0
+        self.health = 1
         self.bomb_range = 1
         self.speed_level = 0
         self.bomb_amount = 1
+
+        self.kills = 0
 
     def spawn_bomb(self, world: 'World', position):
         """Places a bomb on player position"""
@@ -246,3 +248,7 @@ class Player(GameObject):
         bomb.position.x = position[0]
         bomb.position.y = position[1]
         world.bombs.add_node(bomb)
+
+    def hit(self):
+        """Hits player."""
+        self.health -= 1
