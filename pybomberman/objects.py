@@ -1,4 +1,5 @@
 """All game objects"""
+import os
 import random
 from itertools import repeat
 
@@ -88,21 +89,19 @@ class PlayerSprite(Sprite):
         self.rect = self.image.get_rect()
 
 
-class PowerupSprite(Sprite):
+class GenericSprite(Sprite):
     """Sprite of powerup."""
 
-    def __init__(self, name):
+    def __init__(self, filename=None, color=(127, 127, 127)):
         super().__init__()
-        self.image = pygame.Surface((PPM, PPM))
+
+        if filename:
+            self.image = pygame.image.load(filename)
+        else:
+            self.image = pygame.Surface((PPM, PPM))
+            self.image.fill(color)
+
         self.rect = self.image.get_rect()
-        color = (100, 100, 100)
-        if name == 0:
-            color = (100, 0, 0)
-        elif name == 1:
-            color = (0, 100, 0)
-        elif name == 2:
-            color = (0, 0, 100)
-        self.image.fill(color)
 
 
 class Wall(GameObject):
@@ -123,7 +122,7 @@ class DestructibleWall(GameObject):
     def destroy(self, world):
         """Destroys the wall and has a chance of spawning powerup"""
         if random.random() < .9:  # 20% that the powerup will spawn
-            powerup_cls = random.choice([SpeedPowerup])
+            powerup_cls = random.choice([RangePowerup, SpeedPowerup])
             powerup = powerup_cls(self)  # bomb range - 0
             powerup.position.x = self.position[0]  # amount - 1
             powerup.position.y = self.position[1]  # speed - 2
@@ -134,8 +133,7 @@ class DestructibleWall(GameObject):
 class Powerup(GameObject):
     """Powerup class"""
 
-    def __init__(self, world: 'World', name=None, *args, **kwargs):
-        sprite = PowerupSprite(name)
+    def __init__(self, world: 'World', sprite=GenericSprite(), *args, **kwargs):
         shape = Rectangle(0, 0, 1, 1)
         super().__init__(shape, sprite, *args, **kwargs)
         self.world = world
@@ -147,8 +145,26 @@ class Powerup(GameObject):
 class SpeedPowerup(Powerup):
     """Powerup that powers player's speed"""
 
+    def __init__(self, world, *args, **kwargs):
+        filepath = os.path.join(os.path.pardir, 'assets', 'speed_powerup.png')
+        filepath = os.path.realpath(filepath)
+        sprite = GenericSprite(filepath)
+        super().__init__(world, sprite, *args, **kwargs)
+
     def collect(self, player: 'Player'):
         player.speed_level += 1
+
+
+class RangePowerup(Powerup):
+    """Powerup that extends your fire"""
+
+    def __init__(self, world, *args, **kwargs):
+        filepath = os.path.join(os.path.pardir, 'assets', 'bomb.png')
+        sprite = GenericSprite(filepath)
+        super().__init__(world, sprite, *args, **kwargs)
+
+    def collect(self, player: 'Player'):
+        player.bomb_range += 1
 
 
 class Fire(GameObject):
