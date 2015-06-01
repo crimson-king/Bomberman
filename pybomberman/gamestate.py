@@ -72,6 +72,31 @@ class World(NodeGroup):
         wall.position.y = position[1]
         self.destructible_walls.add_node(wall)
 
+    def add_player(self, *args, **kwargs) -> Player:
+        player = Player(*args, **kwargs)
+
+        left = player.shape.width * .5
+        right = self.width - 1 + left
+        top = player.shape.height * .5
+        down = self.height - 1 + top
+
+        players_count = len(self.players)
+        if players_count == 0:
+            position = left, top
+        elif players_count == 1:
+            position = right, down
+        elif players_count == 2:
+            position = left, down
+        elif players_count == 3:
+            position = right, top
+        else:
+            raise NotImplementedError('too many players')
+
+        player.position.x = position[0]
+        player.position.y = position[1]
+        self.players.add_node(player)
+        return player
+
     def draw(self, canvas, offset=(0, 0)):
         """Draws itself"""
         super().draw(canvas, offset)
@@ -108,8 +133,10 @@ class GameState(State):
         self.world.position.y = \
             (config.resolution[1] / PPM - self.world.height) * .5
 
-        self.controllers = [HumanController(Player(), self.world)
-                            for _ in range(config.player_count)]
+        self.controllers = [
+            HumanController(self.world.add_player(), self.world)
+            for _ in range(config.player_count)
+        ]
 
         for controller in self.controllers:
             self.world.players.add_node(controller.player)
