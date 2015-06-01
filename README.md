@@ -101,6 +101,7 @@ All of this is provided with `Game` class.
 
 We want to make a simple menu, where user will be able to start the game,
 configure it, or exit whenever he feels like it.
+I have no idea why anyone would want to exit our game, though.
 Maybe because their graphic card is overheating or something.
 Yeah, I see no other reason.
 Menu and 'MainGame' will be implemented as `State`s,
@@ -140,4 +141,4 @@ Well, in the future it will be implemented. Perhaps.)
 Same goes for destructible walls, but here,
 a powerup might (20%) be left in `World`.
 
-Game is active as long as >= 2 players have all their limbs.
+The game is active as long as >= 2 players have all their limbs.

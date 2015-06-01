@@ -217,7 +217,7 @@ class Bomb(GameObject):
                         break
 
                 if d_wall:
-                    self.world.destructible_walls.remove_node(d_wall)
+                    d_wall.destroy(self.world)
                     break
 
                 for bomb in self.world.bombs:
