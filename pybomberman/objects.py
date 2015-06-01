@@ -185,17 +185,21 @@ class Bomb(GameObject):
         self.parent.remove_node(self)
 
         right = zip(
-            range(int(self.position.x) + 1, self.world.width),
+            range(int(self.position.x) + 1,
+                  min(int(self.position.x) + 1 + self.range, self.world.width)),
             repeat(int(self.position.y)))
         left = zip(
-            range(int(self.position.x) - 1, -1, -1),
+            range(int(self.position.x) - 1,
+                  max(int(self.position.x) - 1 - self.range, -1), -1),
             repeat(int(self.position.y)))
         upward = zip(
             repeat(int(self.position.x)),
-            range(int(self.position.y) - 1, -1, -1))
+            range(int(self.position.y) - 1,
+                  max(int(self.position.y) - 1 - self.range, -1), -1))
         down = zip(
             repeat(int(self.position.x)),
-            range(int(self.position.y) + 1, self.world.height)
+            range(int(self.position.y) + 1,
+                  min(int(self.position.y) + 1 + self.range, self.world.height))
         )
         here = int(self.position.x), int(self.position.y)
         for fields in [here], left, right, upward, down:
