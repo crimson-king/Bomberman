@@ -14,6 +14,7 @@ from pybomberman import physics
 from pybomberman.config import config
 from pybomberman.controllers import HumanController
 from pybomberman.objects import Wall, Player, DestructibleWall
+from pybomberman.resultstate import ResultState
 
 
 class World(NodeGroup):
@@ -49,7 +50,8 @@ class World(NodeGroup):
             (0, 0), (0, 1), (1, 0),
             (width - 1, 0), (width - 1, 1), (width - 2, 0),
             (0, height - 1), (0, height - 2), (1, height - 1),
-            (width - 1, height - 1), (width - 2, height - 1), (width - 1, height - 2)
+            (width - 1, height - 1), (width - 2, height - 1),
+            (width - 1, height - 2)
         )
 
         for pos_x, pos_y in product(range(width), range(height)):
@@ -121,10 +123,12 @@ class World(NodeGroup):
                     player.hit()
 
             player.position.x = max(player.position.x, 0)
-            player.position.x = min(player.position.x, self.width - player.shape.width)
+            player.position.x = min(player.position.x,
+                                    self.width - player.shape.width)
 
             player.position.y = max(player.position.y, 0)
-            player.position.y = min(player.position.y, self.width - player.shape.width)
+            player.position.y = min(player.position.y,
+                                    self.width - player.shape.width)
 
             if player.health <= 0:
                 self.players.remove_node(player)
@@ -144,6 +148,7 @@ class GameState(State):
             HumanController(self.world.add_player(), self.world)
             for _ in range(config.player_count)
         ]
+        self.removed_players = []
 
         for controller in self.controllers:
             self.world.players.add_node(controller.player)
@@ -184,6 +189,10 @@ class GameState(State):
 
     def handle_update(self, dt):
         """Updates the game, world and controllers"""
+        if len(self.controllers) < 2:
+            state_manager.pop()
+            state_manager.push(ResultState(self.removed_players))
+
         if self.escape_action.active():
             state_manager.pop()
 
@@ -195,6 +204,7 @@ class GameState(State):
         for controller in self.controllers:
             if controller.player.health <= 0:
                 self.controllers.remove(controller)
+                self.removed_players.append(controller.player)
 
 
 if __name__ == '__main__':
