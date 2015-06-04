@@ -187,7 +187,7 @@ class GameState(State):
         canvas.fill((0x33, 0x33, 0x33))
         self.world.draw(canvas)
 
-    def handle_update(self, dt):
+    def handle_update(self, delta_time):
         """Updates the game, world and controllers"""
         if len(self.controllers) < 2:
             state_manager.pop()
@@ -197,9 +197,9 @@ class GameState(State):
             state_manager.pop()
 
         for controller in self.controllers:
-            controller.update(dt)
+            controller.update(delta_time)
 
-        self.world.update(dt)
+        self.world.update(delta_time)
 
         for controller in self.controllers:
             if controller.player.health <= 0:

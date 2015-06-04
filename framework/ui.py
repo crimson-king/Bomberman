@@ -6,6 +6,9 @@ This module contains Node and NodeGroups used for easy ui creating
 # pylint: disable=no-name-in-module
 # pylint: disable=no-member
 
+# It is intended to make View another abstraction layer.
+# pylint: disable=abstract-method
+
 import pygame
 from pygame.surface import Surface
 
@@ -14,27 +17,6 @@ from framework.scene import NodeGroup, Node
 from framework.state import State
 from framework import input_manager
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# It is intended to make View another abstraction layer.
-# pylint: disable=abstract-method
 
 class View(Node):
     """
@@ -221,9 +203,9 @@ class StageState(State):
         canvas.fill((0xff, 0xff, 0xff))
         self.stage.draw(canvas)
 
-    def handle_update(self, dt):
+    def handle_update(self, delta_time):
         """Updates stage"""
-        self.stage.update(dt)
+        self.stage.update(delta_time)
 
     def handle_input(self, event):
         """Handles input"""

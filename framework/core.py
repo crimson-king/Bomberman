@@ -1,8 +1,19 @@
+"""
+This module encapsulates simple input-update-draw logic in its Game
+class. It is responsible for implementing game window and invoking
+handle_input, handle_draw and handle_update methods of provided GameHandler
+object in initializer.
+"""
+
+# pygame modules are loaded dynamically, thus, supress no name/members errors
+# pylint: disable=no-name-in-module
+# pylint: disable=no-member
 import pygame
 
 
 class GameHandler:
     """Sort of an abstract class"""
+
     def handle_input(self, event):
         """Pseudo-abstract method for input"""
         pass
@@ -11,11 +22,12 @@ class GameHandler:
         """Pseudo-abstract method for drawing"""
         pass
 
-    def handle_update(self, dt):
+    def handle_update(self, delta_time):
         """Pseudo-abstract method for updating"""
         pass
 
     # noinspection PyMethodMayBeStatic
+    # pylint: disable=no-self-use
     def running(self) -> bool:
         """Checks if the game is running"""
         return True
@@ -23,6 +35,7 @@ class GameHandler:
 
 class Game:
     """A class called Game. Enough said."""
+
     def __init__(self, handler: GameHandler, fps=60, scr_width=960,
                  scr_height=600):
         self._handler = handler
@@ -41,21 +54,22 @@ class Game:
     def run(self):
         """Method responsible for keeping the game alive"""
         while self._handler.running():
-            dt = self._clock.tick(self._fps) * 1e-3
-            self.step(dt)
+            delta_time = self._clock.tick(self._fps) * 1e-3
+            self.step(delta_time)
 
         pygame.quit()
 
-    def step(self, dt):
+    def step(self, delta_time):
         """Using handler methods"""
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 import sys
+
                 sys.exit()
 
             self._handler.handle_input(event)
 
-        self._handler.handle_update(dt)
+        self._handler.handle_update(delta_time)
         self._handler.handle_draw(self._screen)
 
         pygame.display.flip()
@@ -64,6 +78,7 @@ class Game:
 if __name__ == '__main__':
     class SimpleGameHandler(GameHandler):
         """A test handler"""
+
         def running(self):
             """Checks if the game is running."""
             return True

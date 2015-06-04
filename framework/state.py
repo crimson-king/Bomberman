@@ -1,3 +1,9 @@
+"""
+This submodule has State interface derived from GameHandler,
+which subclass instances are operated by StateManager. To use this feature,
+you need to pass StateGameHandler to Game's initializer.
+"""
+
 from framework.core import GameHandler, Game
 
 
@@ -44,9 +50,9 @@ class StateManager(GameHandler):
         if self._states:
             self._states[-1].handle_input(event)
 
-    def handle_update(self, dt):
+    def handle_update(self, delta_time):
         if self._states:
-            self._states[-1].handle_update(dt)
+            self._states[-1].handle_update(delta_time)
 
     def handle_draw(self, canvas):
         if self._states:
@@ -63,8 +69,8 @@ class StateGameHandler(GameHandler):
     def handle_input(self, event):
         manager.handle_input(event)
 
-    def handle_update(self, dt):
-        manager.handle_update(dt)
+    def handle_update(self, delta_time):
+        manager.handle_update(delta_time)
 
     def handle_draw(self, canvas):
         manager.handle_draw(canvas)
