@@ -1,3 +1,10 @@
+"""Includes Node and NodeGroup for managing scene graph. These should be
+updated and drawn in appropriate GameHandler events. It's a shame PyGame
+hasn't got something like this!"""
+
+# pygame modules are loaded dynamically, thus, supress no name/members errors
+# pylint: disable=no-name-in-module
+# pylint: disable=no-member
 from pygame.math import Vector2
 from pygame.surface import Surface
 

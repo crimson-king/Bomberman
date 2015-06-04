@@ -1,6 +1,11 @@
 """
 Contains classes related to processing input events like Action or
 InputManager.
+Allows easy use of PyGame key input (although it can be easily
+adapted to handle other input as well). Action interface along with
+straightforward NormalAction and almost as trivial InitialAction managed by
+InputManager may be used as deadly simple, yet powerful and extensible input
+processor.
 """
 
 from enum import Enum, unique
