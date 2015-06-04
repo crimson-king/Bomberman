@@ -1,0 +1,221 @@
+"""
+This module contains Node and NodeGroups used for easy ui creating
+"""
+
+# pygame modules are loaded dynamically, thus, supress no name/members errors
+# pylint: disable=no-name-in-module
+# pylint: disable=no-member
+
+import pygame
+from pygame.surface import Surface
+
+from framework.input import InitialAction
+from framework.scene import NodeGroup, Node
+from framework.state import State
+from framework import input_manager
+
+
+# It is intended to make View another abstraction layer.
+# pylint: disable=abstract-method
+
+class View(Node):
+    """
+    Focusable, clickable Node with appropriate methods. Intended to use with
+    Stage NodeGroup
+    """
+
+    def __init__(self):
+        super().__init__()
+
+        self._on_click = lambda view: None
+        self._on_focus = lambda view: None
+        self._on_unfocus = lambda view: None
+
+    @property
+    def on_click(self):
+        """Invoked on click"""
+        return self._on_click
+
+    @on_click.setter
+    def on_click(self, value):
+        """Sets on click value"""
+        self._on_click = value
+
+    @property
+    def on_focus(self):
+        """Invoked on focus"""
+        return self._on_focus
+
+    @on_focus.setter
+    def on_focus(self, value):
+        """Sets on focus value"""
+        self._on_focus = value
+
+    @property
+    def on_unfocus(self):
+        """Invoked on focus lose"""
+        return self._on_unfocus
+
+    @on_unfocus.setter
+    def on_unfocus(self, value):
+        """Sets on unfocus value"""
+        self._on_unfocus = value
+
+
+class Button(View):
+    """View that changes its surface on focus and unfocus"""
+
+    def __init__(self, text):
+        super().__init__()
+        self.text = text
+        self.font = pygame.font.Font(pygame.font.get_default_font(), 24)
+
+        self.surface_normal = self.font.render(
+            self.text, True, (0, 0, 0xff))
+
+        self.surface_focused = self.font.render(
+            self.text, True, (0, 0xff, 0xff))
+
+        self.surface = self.surface_normal
+
+        self.size.x = self.surface.get_width()
+        self.size.y = self.surface.get_height()
+
+    def draw(self, canvas: Surface, offset=(0, 0)):
+        """Draws appropriate button's surface"""
+        canvas.blit(self.surface, offset + self.position)
+
+    def update(self, delta_time):
+        """Does nothing"""
+        pass
+
+    def on_focus(self):
+        """Sets appropriate surface to draw"""
+        self.surface = self.surface_focused
+
+    def on_unfocus(self):
+        """Sets appropriate surface to draw"""
+        self.surface = self.surface_normal
+
+
+class Stage(NodeGroup):
+    """NodeGroup that handles focus of its elements"""
+
+    def __init__(self):
+        super().__init__()
+        self.focus = 0
+
+        self.next = InitialAction()
+        self.previous = InitialAction()
+        self.select = InitialAction()
+
+        self._layedout = False
+
+    def layout(self, width, height):
+        """Lays out views"""
+        print('layout')
+        node_count = len(self._nodes)
+        for i, view in enumerate(self._nodes):
+            view.position.x = (width - view.size.x) * .5
+            view.position.y = (height - view.size.y) \
+                              * (i + 1) / (node_count + 1)
+
+        self._layedout = True
+
+    def add_node(self, view: View):
+        """Adds nodes and invalidates current layout"""
+        if len(self._nodes) == self.focus:
+            view.on_focus()
+        super().add_node(view)
+        self._layedout = False
+
+    def draw(self, canvas: Surface, offset=(0, 0)):
+        """Invokes layout method if necessary and draws stage"""
+        if not self._layedout:
+            self.layout(*canvas.get_size())
+
+        super().draw(canvas=canvas, offset=offset)
+
+    def map_actions(self, input_manager_=input_manager):
+        """Maps actions required to handle ui"""
+        input_manager_.map_action(pygame.K_DOWN, self.next)
+        input_manager_.map_action(pygame.K_UP, self.previous)
+        input_manager_.map_action(pygame.K_RETURN, self.select)
+
+    def update(self, delta_time):
+        """Updates stage and its focus"""
+
+        if len(self._nodes) == 0:
+            return
+
+        old_focus = self.focus
+
+        if self.next:
+            self.focus += 1
+        if self.previous:
+            self.focus -= 1
+
+        self.focus %= len(self._nodes)
+
+        if old_focus != self.focus:
+            self._nodes[old_focus].on_unfocus()
+            self._nodes[self.focus].on_focus()
+
+        super().update(delta_time)
+
+        if self.select:
+            focused_node = self._nodes[self.focus]
+            focused_node.on_click(focused_node)
+
+
+class StageState(State):
+    """State that manages stage"""
+
+    def __init__(self):
+        self.stage = Stage()
+
+    def resume(self):
+        """Remaps input actions"""
+        input_manager.clear()
+        self.stage.map_actions(input_manager)
+        input_manager.reset()
+
+    def pause(self):
+        """Clears input actions"""
+        input_manager.clear()
+
+    def handle_draw(self, canvas):
+        """Draws stage"""
+        canvas.fill((0xff, 0xff, 0xff))
+        self.stage.draw(canvas)
+
+    def handle_update(self, dt):
+        """Updates stage"""
+        self.stage.update(dt)
+
+    def handle_input(self, event):
+        """Handles input"""
+        input_manager.handle_input(event)
+
+
+if __name__ == '__main__':
+    from framework.core import Game
+    from framework.state import StateGameHandler
+    from framework import state_manager
+
+    # theese ain't constants, dear pylint!
+    # pylint: disable=invalid-name
+
+    # make sure Game is initialized before ui elements are used
+    state = StageState()
+    game = Game(handler=StateGameHandler())
+
+    button = Button('button')
+    button.on_click = lambda view: print(view, 'clicked!')
+    state.stage.add_node(button)
+
+    button = Button('woo-hoo!')
+    state.stage.add_node(button)
+
+    state_manager.push(state)
+    game.start()
