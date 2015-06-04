@@ -15,6 +15,24 @@ from framework.state import State
 from framework import input_manager
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # It is intended to make View another abstraction layer.
 # pylint: disable=abstract-method
 
@@ -62,32 +80,39 @@ class View(Node):
         self._on_unfocus = value
 
 
-class Button(View):
-    """View that changes its surface on focus and unfocus"""
+class Text(View):
+    """View that displays text"""
 
-    def __init__(self, text):
+    def __init__(self, text, size=24, color=(0, 0, 0)):
         super().__init__()
-        self.text = text
-        self.font = pygame.font.Font(pygame.font.get_default_font(), 24)
-
-        self.surface_normal = self.font.render(
-            self.text, True, (0, 0, 0xff))
-
-        self.surface_focused = self.font.render(
-            self.text, True, (0, 0xff, 0xff))
-
-        self.surface = self.surface_normal
-
+        self.font = pygame.font.Font(pygame.font.get_default_font(), size)
+        self.surface = self.font.render(text, True, color)
         self.size.x = self.surface.get_width()
         self.size.y = self.surface.get_height()
 
     def draw(self, canvas: Surface, offset=(0, 0)):
-        """Draws appropriate button's surface"""
+        """Draws text surface"""
         canvas.blit(self.surface, offset + self.position)
 
     def update(self, delta_time):
-        """Does nothing"""
         pass
+
+
+class Button(Text):
+    """View that changes its surface on focus and unfocus"""
+
+    def __init__(self, text,
+                 normal_color=(0, 0, 0xff),
+                 focused_color=(0, 0xff, 0xff)):
+        super().__init__(text, color=normal_color)
+
+        self.surface_normal = self.surface
+
+        self.surface_focused = self.font.render(text, True, focused_color)
+
+        # this are done in super().init()
+        # self.size.x = self.surface.get_width()
+        # self.size.y = self.surface.get_height()
 
     def on_focus(self):
         """Sets appropriate surface to draw"""
@@ -109,6 +134,9 @@ class Stage(NodeGroup):
         self.previous = InitialAction()
         self.select = InitialAction()
 
+        self.focusables = []
+        self.unfocusables = []
+
         self._layedout = False
 
     def layout(self, width, height):
@@ -124,10 +152,15 @@ class Stage(NodeGroup):
 
     def add_node(self, view: View):
         """Adds nodes and invalidates current layout"""
-        if len(self._nodes) == self.focus:
-            view.on_focus()
         super().add_node(view)
         self._layedout = False
+
+        if isinstance(view, Button):
+            self.focusables.append(view)
+            if len(self.focusables) - 1 == self.focus:
+                view.on_focus()
+        else:
+            self.unfocusables.append(view)
 
     def draw(self, canvas: Surface, offset=(0, 0)):
         """Invokes layout method if necessary and draws stage"""
@@ -144,8 +177,7 @@ class Stage(NodeGroup):
 
     def update(self, delta_time):
         """Updates stage and its focus"""
-
-        if len(self._nodes) == 0:
+        if len(self.focusables) == 0:
             return
 
         old_focus = self.focus
@@ -155,16 +187,16 @@ class Stage(NodeGroup):
         if self.previous:
             self.focus -= 1
 
-        self.focus %= len(self._nodes)
+        self.focus %= len(self.focusables)
 
         if old_focus != self.focus:
-            self._nodes[old_focus].on_unfocus()
-            self._nodes[self.focus].on_focus()
+            self.focusables[old_focus].on_unfocus()
+            self.focusables[self.focus].on_focus()
 
         super().update(delta_time)
 
         if self.select:
-            focused_node = self._nodes[self.focus]
+            focused_node = self.focusables[self.focus]
             focused_node.on_click(focused_node)
 
 
@@ -210,7 +242,10 @@ if __name__ == '__main__':
     state = StageState()
     game = Game(handler=StateGameHandler())
 
-    button = Button('button')
+    text_view = Text('Hello, ui!')
+    state.stage.add_node(text_view)
+
+    button = Button('click me (and watch console output)')
     button.on_click = lambda view: print(view, 'clicked!')
     state.stage.add_node(button)
 
