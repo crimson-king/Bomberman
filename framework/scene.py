@@ -1,26 +1,30 @@
 from pygame.math import Vector2
+from pygame.surface import Surface
 
 
 class Node:
     """Class for handling objects' actual display"""
+
     def __init__(self, pos_x=0, pos_y=0):
         self.position = Vector2()
         self.position.x = pos_x
         self.position.y = pos_y
+        self.size = Vector2()
 
         self.parent = None
 
-    def draw(self, canvas, offset=(0, 0)):
+    def draw(self, canvas: Surface, offset=(0, 0)):
         """Drawing stuff"""
         raise NotImplementedError
 
-    def update(self, dt):
+    def update(self, delta_time):
         """Updating stuff"""
         raise NotImplementedError
 
 
 class NodeGroup(Node):
     """Handles list of nodes"""
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._nodes = []
@@ -35,15 +39,15 @@ class NodeGroup(Node):
         self._nodes.remove(node)
         node.parent = None
 
-    def draw(self, canvas, offset=(0, 0)):
+    def draw(self, canvas: Surface, offset=(0, 0)):
         """Draws each node in the list"""
         for node in self._nodes:
             node.draw(canvas, offset=offset + self.position)
 
-    def update(self, dt):
+    def update(self, delta_time):
         """Updates each node in the list"""
         for node in self._nodes:
-            node.update(dt)
+            node.update(delta_time)
 
     def __len__(self):
         """Returns length of node list"""

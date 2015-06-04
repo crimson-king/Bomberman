@@ -3,6 +3,7 @@ from itertools import product
 import random
 
 import pygame
+
 from framework import input_manager, state_manager
 from framework.core import Game
 from framework.input import InitialAction
@@ -101,9 +102,9 @@ class World(NodeGroup):
         """Draws itself"""
         super().draw(canvas, offset)
 
-    def update(self, dt):
+    def update(self, delta_time):
         """Updates and sets collisions"""
-        super().update(dt)
+        super().update(delta_time)
 
         for player in self.players:
             for wall in self.walls:

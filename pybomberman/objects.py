@@ -28,13 +28,13 @@ class GameObject(Node):
         """Draws itself"""
         canvas.blit(self.sprite.image, (offset + self.position) * PPM)
 
-    def update(self, dt):
+    def update(self, delta_time):
         """Updates itself if it has moved"""
         if self.velocity == (0, 0):
             return
 
         self.velocity.normalize_ip()
-        self.position += self.velocity * self.speed * dt
+        self.position += self.velocity * self.speed * delta_time
 
 
 class BombSprite(Sprite):
@@ -168,9 +168,9 @@ class Fire(GameObject):
 
         self.time = 1
 
-    def update(self, dt):
+    def update(self, delta_time):
         """Burn baby burn"""
-        self.time -= dt
+        self.time -= delta_time
         if self.time <= 0:
             self.parent.remove_node(self)
 
@@ -280,8 +280,8 @@ class Player(GameObject):
         """Hits player."""
         self.health -= 1
 
-    def update(self, dt):
-        super().update(dt)
+    def update(self, delta_time):
+        super().update(delta_time)
 
         for bomb in self.bombs:
             if bomb.time <= 0:
