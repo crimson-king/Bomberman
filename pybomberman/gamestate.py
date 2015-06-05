@@ -128,7 +128,7 @@ class World(NodeGroup):
 
             player.position.y = max(player.position.y, 0)
             player.position.y = min(player.position.y,
-                                    self.width - player.shape.width)
+                                    self.width - player.shape.height)
 
             if player.health <= 0:
                 self.players.remove_node(player)
@@ -148,7 +148,7 @@ class GameState(State):
             HumanController(self.world.add_player(), self.world)
             for _ in range(config.player_count)
         ]
-        self.removed_players = []
+        self.players = [controller.player for controller in self.controllers]
 
         for controller in self.controllers:
             self.world.players.add_node(controller.player)
@@ -191,7 +191,7 @@ class GameState(State):
         """Updates the game, world and controllers"""
         if len(self.controllers) < 2:
             state_manager.pop()
-            state_manager.push(ResultState(self.removed_players))
+            state_manager.push(ResultState(self.players))
 
         if self.escape_action.active():
             state_manager.pop()
@@ -204,7 +204,6 @@ class GameState(State):
         for controller in self.controllers:
             if controller.player.health <= 0:
                 self.controllers.remove(controller)
-                self.removed_players.append(controller.player)
 
 
 if __name__ == '__main__':
