@@ -18,29 +18,7 @@ class Facade:
         """Runs the game"""
         def backtomenu():
             """Goes back to menu and saves settings"""
-            settings = {'players': {'amount': config.players},
-                        'p1keys': {'left': config.player_key_configs[1].left,
-                                   'right': config.player_key_configs[1].right,
-                                   'upward': config.player_key_configs[1].upward,
-                                   'down': config.player_key_configs[1].down,
-                                   'action': config.player_key_configs[1].action},
-                        'p2keys': {'left': config.player_key_configs[2].left,
-                                   'right': config.player_key_configs[2].right,
-                                   'upward': config.player_key_configs[2].upward,
-                                   'down': config.player_key_configs[2].down,
-                                   'action': config.player_key_configs[2].action},
-                        'p3keys': {'left': config.player_key_configs[3].left,
-                                   'right': config.player_key_configs[3].right,
-                                   'upward': config.player_key_configs[3].upward,
-                                   'down': config.player_key_configs[3].down,
-                                   'action': config.player_key_configs[3].action},
-                        'p0keys': {'left': config.player_key_configs[0].left,
-                                   'right': config.player_key_configs[0].right,
-                                   'upward': config.player_key_configs[0].upward,
-                                   'down': config.player_key_configs[0].down,
-                                   'action': config.player_key_configs[0].action}}
-            with open('settings.json', 'w') as outfile:
-                json.dump(settings, outfile)
+            config.save()
             state_manager.pop()
 
         def chooseplayers(item: Item):

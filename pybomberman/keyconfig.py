@@ -30,24 +30,24 @@ class KeyConfigState(State):
                              self.change_current_player),
                             ('Action: ' +
                              pygame.key.name(
-                                 config.player_key_configs[self.current_player]
-                                     .action), self.select_key),
+                                 config.players[self.current_player].key_binding.action),
+                             self.select_key),
                             ('Up key: ' +
                              pygame.key.name(
-                                 config.player_key_configs[self.current_player]
-                                     .upward), self.select_key),
+                                 config.players[self.current_player].key_binding.upward),
+                             self.select_key),
                             ('Down key: ' +
                              pygame.key.name(
-                                 config.player_key_configs[self.current_player]
-                                     .down), self.select_key),
+                                 config.players[self.current_player].key_binding.down),
+                             self.select_key),
                             ('Left key: ' +
                              pygame.key.name(
-                                 config.player_key_configs[self.current_player]
-                                     .left), self.select_key),
+                                 config.players[self.current_player].key_binding.left),
+                             self.select_key),
                             ('Right key: ' +
                              pygame.key.name(
-                                 config.player_key_configs[self.current_player]
-                                     .right), self.select_key),
+                                 config.players[self.current_player].key_binding.right),
+                             self.select_key),
                             ('Go Back', state_manager.pop))
         self.items = []
         for i, item in enumerate(option_functions):
@@ -73,7 +73,7 @@ class KeyConfigState(State):
     def change_current_player(self):
         """ selects next available for which settings are being set """
         self.current_player = (
-            (self.current_player + 1) % config.players)
+            (self.current_player + 1) % 4)
         self.items[self.selected].text = "Player <%d> keys" % (
             self.current_player + 1)
         self.update_keys()
@@ -81,28 +81,28 @@ class KeyConfigState(State):
     def update_keys(self):
         """ updates key names for key mappings for current player """
         self.items[1].text = 'Action: ' + pygame.key.name(
-            config.player_key_configs[self.current_player].action)
+            config.players[self.current_player].key_binding.action)
         self.items[2].text = 'Up key: ' + pygame.key.name(
-            config.player_key_configs[self.current_player].upward)
+            config.players[self.current_player].key_binding.upward)
         self.items[3].text = 'Down key: ' + pygame.key.name(
-            config.player_key_configs[self.current_player].down)
+            config.players[self.current_player].key_binding.down)
         self.items[4].text = 'Left key: ' + pygame.key.name(
-            config.player_key_configs[self.current_player].left)
+            config.players[self.current_player].key_binding.left)
         self.items[5].text = 'Right key: ' + pygame.key.name(
-            config.player_key_configs[self.current_player].right)
+            config.players[self.current_player].key_binding.right)
 
     def set_key(self, key):
         """ sets new key for key mapping for current player """
         if self.selected == 1:
-            config.player_key_configs[self.current_player].action = key
+            config.players[self.current_player].key_binding.action = key
         elif self.selected == 2:
-            config.player_key_configs[self.current_player].upward = key
+            config.players[self.current_player].key_binding.upward = key
         elif self.selected == 3:
-            config.player_key_configs[self.current_player].down = key
+            config.players[self.current_player].key_binding.down = key
         elif self.selected == 4:
-            config.player_key_configs[self.current_player].left = key
+            config.players[self.current_player].key_binding.left = key
         else:
-            config.player_key_configs[self.current_player].right = key
+            config.players[self.current_player].key_binding.right = key
         self.update_keys()
 
     def handle_draw(self, canvas):

@@ -37,7 +37,13 @@ class Config:
     def __init__(self, **kwargs):
         self.player_count = kwargs['player_count']
         self.resolution = kwargs['resolution']
+        self.players = [PlayerConfig(**player_dict)
+                        for player_dict in kwargs['players']]
 
+    def update(self, **kwargs):
+        """Updates config"""
+        self.player_count = kwargs['player_count']
+        self.resolution = kwargs['resolution']
         self.players = [PlayerConfig(**player_dict)
                         for player_dict in kwargs['players']]
 
