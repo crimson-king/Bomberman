@@ -10,8 +10,9 @@ class ResultState(StageState):
     def __init__(self, players):
         super().__init__()
         for i, player in enumerate(players):
-            text_view = Text('Player {}: kills: {kills}'
-                             .format(i, **player.__dict__))
+            result = 'wins' if player.health > 0 else 'loses'
+            text_view = Text('Player {} {result}, kills: {kills}'
+                             .format(i, result=result, **player.__dict__))
             self.stage.add_node(text_view)
 
         self.again_button = Button('Again')
