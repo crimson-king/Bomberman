@@ -171,10 +171,13 @@ class Fire(GameObject):
 class Bomb(GameObject):
     """Bomb class"""
 
-    def __init__(self, owner: 'Player', world: 'World', sprite=BombSprite(),
-                 *args, **kwargs):
+    def __init__(self, owner: 'Player', world: 'World', *args, **kwargs):
+        bomb_sheet = pygame.image.load(
+            os.path.join(ASSETS_PATH, 'bomb_sheet.png'))
+        self.animation = Animation(bomb_sheet, 3, 1, 1)
+
         shape = Rectangle(0, 0, 1, 1)
-        super().__init__(shape, sprite, *args, **kwargs)
+        super().__init__(shape, self.animation, *args, **kwargs)
         self.owner = owner
         self.world = world
 
@@ -183,6 +186,8 @@ class Bomb(GameObject):
 
     def update(self, delta_time):
         """Checks the time it has left to detonate"""
+        self.animation.update(delta_time)
+
         self.time -= delta_time
         if self.time <= 0:
             self.detonate()
@@ -275,8 +280,10 @@ class Player(GameObject):
             return
 
         bomb = Bomb(self, world)
-        bomb.position.x = position[0]
-        bomb.position.y = position[1]
+        bomb.position.x = position[0] \
+                          + .5 * (1 - bomb.animation.frame_width / PPM)
+        bomb.position.y = position[1] \
+                          + .5 * (1 - bomb.animation.frame_height / PPM)
         self.bombs.append(bomb)
         world.bombs.add_node(bomb)
 
