@@ -114,20 +114,23 @@ class Powerup(GameObject):
         self.world = world
 
     def collect(self, player: 'Player'):
+        """Raises an error."""
         raise NotImplementedError
 
 
 class BombAmountPowerup(Powerup):
+    """Powerup increasing the amount of bombs"""
     def __init__(self, world, *args, **kwargs):
         sprite = GenericSprite(os.path.join(ASSETS_PATH, 'bomb.png'))
         super().__init__(world, sprite, *args, **kwargs)
 
     def collect(self, player: 'Player'):
+        """Gives a player an additional bomb to use"""
         player.bomb_amount += 1
 
 
 class SpeedPowerup(Powerup):
-    """Powerup that powers player's speed"""
+    """Powerup that increases player's speed"""
 
     def __init__(self, world, *args, **kwargs):
         filepath = os.path.join(ASSETS_PATH, 'speed_powerup.png')
@@ -135,6 +138,7 @@ class SpeedPowerup(Powerup):
         super().__init__(world, sprite, *args, **kwargs)
 
     def collect(self, player: 'Player'):
+        """Increases player's speed"""
         player.speed_level += 1
 
 
@@ -147,6 +151,7 @@ class RangePowerup(Powerup):
         super().__init__(world, sprite, *args, **kwargs)
 
     def collect(self, player: 'Player'):
+        """Extends range of player's bombs"""
         player.bomb_range += 1
 
 
@@ -293,6 +298,7 @@ class Player(GameObject):
         self.health -= 1
 
     def update(self, delta_time):
+        """Updates, animates, and stuff"""
         super().update(delta_time)
 
         if self.velocity.x > 0:
@@ -314,8 +320,10 @@ class Player(GameObject):
 
     @property
     def speed(self):
+        """Returns speed"""
         return 1 + self.speed_level * .25
 
     @speed.setter
     def speed(self, value):
+        """Sets speed"""
         pass

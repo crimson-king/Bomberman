@@ -3,6 +3,7 @@ import inspect
 import pygame
 from framework.state import State
 
+# pylint: disable=no-member
 BLACK = (0, 0, 0)
 CRIMSON = (220, 20, 60)
 pygame.init()

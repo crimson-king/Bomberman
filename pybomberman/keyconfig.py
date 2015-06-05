@@ -10,7 +10,7 @@ from pybomberman.menu import Item
 from pybomberman.config import config
 from framework import state_manager
 
-
+# pylint: disable=no-member
 BLACK = (0, 0, 0)
 CRIMSON = (220, 20, 60)
 pygame.init()

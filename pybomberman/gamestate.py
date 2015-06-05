@@ -15,7 +15,7 @@ from pybomberman.config import config
 from pybomberman.controllers import HumanController
 from pybomberman.objects import Wall, Player, DestructibleWall
 from pybomberman.resultstate import ResultState
-
+# pylint: disable=no-member
 
 class World(NodeGroup):
     """Contains node groups with objects"""
@@ -64,18 +64,21 @@ class World(NodeGroup):
                     self.add_destructible_wall((pos_x, pos_y))
 
     def add_wall(self, position):
+        """Adds a wall"""
         wall = Wall()
         wall.position.x = position[0]
         wall.position.y = position[1]
         self.walls.add_node(wall)
 
     def add_destructible_wall(self, position):
+        """Adds a destructible wall"""
         wall = DestructibleWall()
         wall.position.x = position[0]
         wall.position.y = position[1]
         self.destructible_walls.add_node(wall)
 
     def add_player(self, *args, **kwargs) -> Player:
+        """Adds a player"""
         player = Player(*args, **kwargs)
 
         left = player.shape.width * .5

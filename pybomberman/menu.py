@@ -4,7 +4,7 @@ from framework.input import InitialAction
 from framework.state import State
 from framework import input_manager
 
-
+# pylint: disable=no-member
 BLACK = (0, 0, 0)
 CRIMSON = (220, 20, 60)
 pygame.init()
@@ -55,6 +55,7 @@ class MenuState(State):
         self.down_action = InitialAction()
 
     def resume(self):
+        """Resumes the state"""
         input_manager.map_action(pygame.K_RETURN, self.select_action)
         input_manager.map_action(pygame.K_UP, self.up_action)
         input_manager.map_action(pygame.K_DOWN, self.down_action)

@@ -36,7 +36,8 @@ class Facade:
         def options():
             """Goes to options state"""
             optionfunctions = (('Amount of players: <%d>' % config.player_count, chooseplayers),
-                               ('Resolution', backtomenu), ('Key bindings', key_bindings), ('Go back', backtomenu))
+                               ('Resolution', backtomenu),
+                               ('Key bindings', key_bindings), ('Go back', backtomenu))
             items = []
             for i, item in enumerate(optionfunctions):
                 items.append(Item(item))

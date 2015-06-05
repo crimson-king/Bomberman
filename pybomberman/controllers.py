@@ -5,7 +5,7 @@ from pybomberman.objects import Player
 
 class Controller:
     """Abstract controller"""
-    def update(self, dt):
+    def update(self, delta_time):
         """Abstract update"""
         pass
 
@@ -22,7 +22,7 @@ class HumanController(Controller):
         self.action_left = NormalAction()
         self.action_right = NormalAction()
 
-    def update(self, dt):
+    def update(self, delta_time):
         """Handles velocity and action"""
         self.player.velocity.x = \
             self.action_right.active() - self.action_left.active()
