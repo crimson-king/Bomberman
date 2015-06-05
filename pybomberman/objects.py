@@ -9,6 +9,7 @@ from pygame.sprite import Sprite
 from pygame import Surface
 
 from pybomberman import PPM, ASSETS_PATH
+from pybomberman.animation import Animation
 from pybomberman.shapes import Shape, Rectangle
 from framework.scene import Node
 
@@ -57,16 +58,6 @@ class FireSprite(Sprite):
         self.rect = self.image.get_rect()
 
 
-class PlayerSprite(Sprite):
-    """Sprite of player"""
-
-    def __init__(self):
-        super().__init__()
-        self.image = pygame.Surface((PPM * .5, PPM * .5))
-        self.image.fill((0, 0xff, 0))
-        self.rect = self.image.get_rect()
-
-
 class GenericSprite(Sprite):
     """Sprite of powerup."""
 
@@ -104,7 +95,8 @@ class DestructibleWall(GameObject):
     def destroy(self, world):
         """Destroys the wall and has a chance of spawning powerup"""
         if random.random() < .9:  # 20% that the powerup will spawn
-            powerup_cls = random.choice([BombAmountPowerup, RangePowerup, SpeedPowerup])
+            powerup_cls = random.choice(
+                [BombAmountPowerup, RangePowerup, SpeedPowerup])
             powerup = powerup_cls(self)  # bomb range - 0
             powerup.position.x = self.position[0]  # amount - 1
             powerup.position.y = self.position[1]  # speed - 2
@@ -115,7 +107,8 @@ class DestructibleWall(GameObject):
 class Powerup(GameObject):
     """Powerup class"""
 
-    def __init__(self, world: 'World', sprite=GenericSprite(), *args, **kwargs):
+    def __init__(self, world: 'World', sprite=GenericSprite(), *args,
+                 **kwargs):
         shape = Rectangle(0, 0, 1, 1)
         super().__init__(shape, sprite, *args, **kwargs)
         self.world = world
@@ -202,7 +195,8 @@ class Bomb(GameObject):
 
         right = zip(
             range(int(self.position.x) + 1,
-                  min(int(self.position.x) + 1 + self.range, self.world.width)),
+                  min(int(self.position.x) + 1 + self.range,
+                      self.world.width)),
             repeat(int(self.position.y)))
         left = zip(
             range(int(self.position.x) - 1,
@@ -215,7 +209,8 @@ class Bomb(GameObject):
         down = zip(
             repeat(int(self.position.x)),
             range(int(self.position.y) + 1,
-                  min(int(self.position.y) + 1 + self.range, self.world.height))
+                  min(int(self.position.y) + 1 + self.range,
+                      self.world.height))
         )
         here = int(self.position.x), int(self.position.y)
         for fields in [here], left, right, upward, down:
@@ -251,9 +246,18 @@ class Bomb(GameObject):
 class Player(GameObject):
     """Player class"""
 
-    def __init__(self, sprite=PlayerSprite(), *args, **kwargs):
-        shape = Rectangle(0, 0, .5, .5)
-        super().__init__(shape, sprite, *args, **kwargs)
+    sheet_movement = pygame.image.load(
+        os.path.join(ASSETS_PATH, 'player_sheet.png'))
+
+    def __init__(self, *args, **kwargs):
+        self.animation = Animation(Player.sheet_movement, 4, 4, .33)
+        self.animation.update(0)
+        shape = Rectangle(
+            0, 0,
+            self.animation.frame_width / PPM,
+            self.animation.frame_height / PPM)
+
+        super().__init__(shape, self.animation, *args, **kwargs)
 
         self.health = 1
         self.bomb_range = 1
@@ -282,6 +286,19 @@ class Player(GameObject):
 
     def update(self, delta_time):
         super().update(delta_time)
+
+        if self.velocity.x > 0:
+            self.animation.col = 3
+        if self.velocity.x < 0:
+            self.animation.col = 1
+
+        if self.velocity.y > 0:
+            self.animation.col = 0
+        if self.velocity.y < 0:
+            self.animation.col = 2
+
+        if self.velocity != (0, 0):
+            self.sprite.update(delta_time * self.speed)
 
         for bomb in self.bombs:
             if bomb.time <= 0:
