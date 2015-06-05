@@ -237,7 +237,8 @@ class Bomb(GameObject):
                     break
 
                 for bomb in self.world.bombs:
-                    if field == bomb.position and self is not bomb:
+                    if field == (int(bomb.position.x), int(bomb.position.y)) \
+                            and self is not bomb:
                         bomb.detonate()
 
     def spawn_fire(self, field):

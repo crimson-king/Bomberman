@@ -121,6 +121,10 @@ class World(NodeGroup):
             for fire in self.fire:
                 if physics.collides(player, fire, resolve=False):
                     player.hit()
+                    if player.health <= 0:
+                        self.players.remove_node(player)
+                        if player is not fire.owner:
+                            fire.owner.kills += 1
 
             player.position.x = max(player.position.x, 0)
             player.position.x = min(player.position.x,
@@ -129,9 +133,6 @@ class World(NodeGroup):
             player.position.y = max(player.position.y, 0)
             player.position.y = min(player.position.y,
                                     self.width - player.shape.height)
-
-            if player.health <= 0:
-                self.players.remove_node(player)
 
 
 class GameState(State):
