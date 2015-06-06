@@ -88,13 +88,34 @@ class Button(Text):
                  focused_color=(0, 0xff, 0xff)):
         super().__init__(text, color=normal_color)
 
+        self._text = text
         self.surface_normal = self.surface
+        self.surface_focused = None
+        self.normal_color = normal_color
+        self.focused_color = focused_color
 
-        self.surface_focused = self.font.render(text, True, focused_color)
+        self.render()
 
-        # this are done in super().init()
-        # self.size.x = self.surface.get_width()
-        # self.size.y = self.surface.get_height()
+    def render(self):
+        focused = self.surface is self.surface_focused
+        self.surface_normal = self.font.render(
+            self._text, True, self.normal_color)
+        self.surface_focused = self.font.render(
+            self._text, True, self.focused_color)
+        self.surface = self.surface_focused if focused else self.surface_normal
+        self.size.x = self.surface.get_width()
+        self.size.y = self.surface.get_height()
+        if self.parent:
+            self.parent.layedout = False
+
+    @property
+    def text(self):
+        return self._text
+
+    @text.setter
+    def text(self, value):
+        self._text = value
+        self.render()
 
     def on_focus(self):
         """Sets appropriate surface to draw"""
@@ -119,7 +140,7 @@ class Stage(NodeGroup):
         self.focusables = []
         self.unfocusables = []
 
-        self._layedout = False
+        self.layedout = False
 
     def layout(self, width, height):
         """Lays out views"""
@@ -130,12 +151,12 @@ class Stage(NodeGroup):
             view.position.y = (height - view.size.y) \
                               * (i + 1) / (node_count + 1)
 
-        self._layedout = True
+        self.layedout = True
 
     def add_node(self, view: View):
         """Adds nodes and invalidates current layout"""
         super().add_node(view)
-        self._layedout = False
+        self.layedout = False
 
         if isinstance(view, Button):
             self.focusables.append(view)
@@ -146,7 +167,7 @@ class Stage(NodeGroup):
 
     def draw(self, canvas: Surface, offset=(0, 0)):
         """Invokes layout method if necessary and draws stage"""
-        if not self._layedout:
+        if not self.layedout:
             self.layout(*canvas.get_size())
 
         super().draw(canvas=canvas, offset=offset)
