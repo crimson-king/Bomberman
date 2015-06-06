@@ -5,6 +5,7 @@ from framework.ui import StageState, Text, Button
 from framework import state_manager
 
 from pybomberman.states.game import GameState
+from pybomberman.states.options import OptionsState
 
 
 class MainMenuState(StageState):
@@ -31,6 +32,6 @@ class MainMenuState(StageState):
         if button is self.play_button:
             state_manager.push(GameState())
         elif button is self.settings_button:
-            print('NotYetImplemented')
+            state_manager.push(OptionsState())
         elif button is self.exit_button:
             sys.exit()
