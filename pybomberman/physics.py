@@ -58,28 +58,28 @@ def resolve_collision_rect(obj: GameObject, other: GameObject):
     other_center_x = other.shape.pos_x + other.shape.width * .5
     other_center_y = other.shape.pos_y + other.shape.height * .5
 
-    dx = (obj_center_x - other_center_x) / (other.shape.width * .5)
-    dy = (obj_center_y - other_center_y) / (other.shape.height * .5)
+    delta_x = (obj_center_x - other_center_x) / (other.shape.width * .5)
+    delta_y = (obj_center_y - other_center_y) / (other.shape.height * .5)
 
-    adx, ady = math.fabs(dx), math.fabs(dy)
+    adx, ady = math.fabs(delta_x), math.fabs(delta_y)
 
     if math.fabs(adx - ady) < .1:
-        if dx < 0:
+        if delta_x < 0:
             obj.shape.pos_x = other.shape.pos_x - obj.shape.width
         else:
             obj.shape.pos_x = other.shape.pos_x + other.shape.width
 
-        if dy > 0:
+        if delta_y > 0:
             obj.shape.pos_y = other.shape.pos_y + other.shape.height
         else:
             obj.shape.pos_y = other.shape.pos_y - obj.shape.height
     elif adx > ady:
-        if dx < 0:
+        if delta_x < 0:
             obj.shape.pos_x = other.shape.pos_x - obj.shape.width
         else:
             obj.shape.pos_x = other.shape.pos_x + other.shape.width
     else:
-        if dy > 0:
+        if delta_y > 0:
             obj.shape.pos_y = other.shape.pos_y + other.shape.height
         else:
             obj.shape.pos_y = other.shape.pos_y - obj.shape.height

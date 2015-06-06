@@ -6,10 +6,10 @@ from pygame.math import Vector2
 
 
 class Shape:
+    """Abstract shape class"""
     def __init__(self):
         pass
 
-    """Abstract shape class"""
     def move(self, pos_x=0, pos_y=0):
         """Abstract move method"""
         raise NotImplementedError

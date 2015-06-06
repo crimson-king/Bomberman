@@ -1,6 +1,5 @@
 """A facade, used for running the game"""
 import sys
-import json
 
 from framework.core import Game
 from framework.state import StateGameHandler
@@ -14,6 +13,14 @@ from pybomberman.gamestate import GameState
 
 class Facade:
     """What the string above said."""
+    def __init__(self):
+        self.items = []
+
+    def startgame(self):
+        """Starts the game"""
+        state_manager.push(GameState())
+        Game(handler=StateGameHandler()).start()
+
     def run_game(self):
         """Runs the game"""
         def backtomenu():
@@ -28,20 +35,15 @@ class Facade:
                 config.player_count = 2
             item.text = "Amount of players: <%d>" % config.player_count
 
-        def startgame():
-            """Starts the game"""
-            state_manager.push(GameState())
-            Game(handler=StateGameHandler()).start()
-
         def options():
             """Goes to options state"""
             optionfunctions = (('Amount of players: <%d>' % config.player_count, chooseplayers),
                                ('Resolution', backtomenu),
                                ('Key bindings', key_bindings), ('Go back', backtomenu))
-            items = []
-            for i, item in enumerate(optionfunctions):
-                items.append(Item(item))
-            state_manager.push(OptionsState(*config.resolution, items=items))
+            self.items = []
+            for item in optionfunctions:
+                self.items.append(Item(item))
+            state_manager.push(OptionsState(*config.resolution, items=self.items))
             Game(handler=StateGameHandler()).start()
 
         def key_bindings():
@@ -49,6 +51,6 @@ class Facade:
             state_manager.push(KeyConfigState(*config.resolution))
             Game(handler=StateGameHandler()).start()
 
-        texts = (('Start', startgame), ('Options', options), ('Exit', sys.exit))
+        texts = (('Start', self.startgame), ('Options', options), ('Exit', sys.exit))
         state_manager.push(MenuState(*config.resolution, texts=texts))
         Game(StateGameHandler(), 60, *config.resolution).start()

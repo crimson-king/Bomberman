@@ -1,3 +1,4 @@
+"""Menu"""
 import pygame
 
 from framework.input import InitialAction

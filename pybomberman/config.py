@@ -5,7 +5,7 @@ import json
 import pygame
 
 import pybomberman
-
+# pylint: disable=no-member
 
 class PlayerKeyBinding:
     """5 keys that player uses"""
@@ -51,13 +51,15 @@ class Config:
         """Returns dictionary out of configuration"""
         return {'resolution': self.resolution,
                 'player_count': self.player_count,
-                'players': [p.to_dict() for p in self.players],
-                }
+                'players': [p.to_dict() for p in self.players]}
 
     def save(self):
         """Saves configuration in json"""
         with open(filepath, mode='w+') as file_handle:
             json.dump(self.to_dict(), fp=file_handle, indent=4)
+
+# pylint: disable=invalid-name
+# not constants
 
 filename = 'config.json'
 

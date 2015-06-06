@@ -1,8 +1,14 @@
+"""Animation"""
+# pylint: disable=no-member
+
+# pylint: disable-msg=E0611
+# this one is for the two imports below
 from pygame.rect import Rect
 from pygame.surface import Surface
 
 
 class Animation:
+    """Animation class"""
     colorkey = (0xff, 0xff, 0)
 
     def __init__(self, surface: Surface, rows, cols,
@@ -27,6 +33,7 @@ class Animation:
         self.valid = False
 
     def update_image(self):
+        """Updates image"""
         area = Rect(self.row * self.frame_width,
                     self._col * self.frame_height,
                     0, 0)
@@ -41,6 +48,7 @@ class Animation:
         self.valid = True
 
     def update(self, delta_time):
+        """Updates"""
         self.time += delta_time
 
         old_row = self.row
@@ -50,6 +58,7 @@ class Animation:
             self.update_image()
 
     def reset(self):
+        """Resets"""
         self.row = 0
         self._col = 0
         self.time = 0
@@ -57,9 +66,11 @@ class Animation:
 
     @property
     def col(self):
+        """Returns col"""
         return self._col
 
     @col.setter
     def col(self, value):
+        """Sets column"""
         self._col = value
         self.valid = False

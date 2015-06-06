@@ -3,5 +3,6 @@ __author__ = 'Mateusz'
 
 from pybomberman.facade import Facade
 
-FACADE = Facade()
-FACADE.run_game()
+# pylint: disable=invalid-name
+facade = Facade()
+facade.run_game()
