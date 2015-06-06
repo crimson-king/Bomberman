@@ -113,27 +113,33 @@ class KeyConfigState(StageState):
             self.action_to_assign = 'action'
             self.action_button.text = 'PRESS KEY TO ASSIGN'
         elif button is self.up_button:
-            self.update_keys()
-            pass
-            # config.players[self.current_player].key_binding.upward = key
+            self.action_to_assign = 'up'
+            self.up_button.text = 'PRESS KEY TO ASSIGN'
         elif button is self.down_button:
-            self.update_keys()
-            pass
-            # config.players[self.current_player].key_binding.down = key
+            self.action_to_assign = 'down'
+            self.down_button.text = 'PRESS KEY TO ASSIGN'
         elif button is self.left_button:
-            self.update_keys()
-            pass
-            # config.players[self.current_player].key_binding.left = key
+            self.action_to_assign = 'left'
+            self.left_button.text = 'PRESS KEY TO ASSIGN'
         elif button is self.right_button:
-            self.update_keys()
-            pass
-            # config.players[self.current_player].key_binding.right = key
+            self.action_to_assign = 'right'
+            self.right_button.text = 'PRESS KEY TO ASSIGN'
         elif button is self.exit_button:
             state_manager.pop()
 
     def handle_input(self, event):
         if self.action_to_assign and event.type == pygame.KEYDOWN:
-            config.players[self.current_player].key_binding.action = event.key
+            if self.action_to_assign == 'action':
+                config.players[self.current_player].key_binding.action = event.key
+            elif self.action_to_assign == 'up':
+                config.players[self.current_player].key_binding.upward = event.key
+            elif self.action_to_assign == 'down':
+                config.players[self.current_player].key_binding.down = event.key
+            elif self.action_to_assign == 'left':
+                config.players[self.current_player].key_binding.left = event.key
+            elif self.action_to_assign == 'right':
+                config.players[self.current_player].key_binding.right = event.key
+
             self.action_to_assign = None
             self.update_keys()
         else:
