@@ -17,28 +17,39 @@ class OptionsState(StageState):
         title_view = Text('PyBomberman')
         self.stage.add_node(title_view)
 
-        self.player_button = Button('AMOUNT OF PLAYERS: <%d>' % config.player_count)
+        self.player_button = Button('AMOUNT OF PLAYERS: <%d>' % config.player_count,
+                                    focused_color=CRIMSON)
         self.player_button.on_click = self.on_click
         self.stage.add_node(self.player_button)
 
-        self.resolution_button = Button('RESOLUTION')
+        self.resolution_button = Button('RESOLUTION',
+                                        focused_color=CRIMSON)
         self.stage.add_node(self.resolution_button)
         self.resolution_button.on_click = self.on_click
 
-        self.key_config_button = Button('PLAYER KEY CONFIGURATION')
+        self.key_config_button = Button('PLAYER KEY CONFIGURATION',
+                                        focused_color=CRIMSON)
         self.stage.add_node(self.key_config_button)
         self.key_config_button.on_click = self.on_click
 
-        self.exit_button = Button('GO BACK')
+        self.exit_button = Button('GO BACK', focused_color=CRIMSON)
         self.stage.add_node(self.exit_button)
         self.exit_button.on_click = self.on_click
 
     def on_click(self, button: Button):
         """Button functions"""
         if button is self.player_button:
-            #state_manager.push(GameState())
-            pass
+            self.chooseplayers()
         elif button is self.resolution_button:
             print('NotYetImplemented')
+        elif button is self.key_config_button:
+            pass
         elif button is self.exit_button:
             state_manager.pop()
+
+    def chooseplayers(self):
+        """Switches amount of players"""
+        config.player_count += 1
+        if config.player_count > len(config.players):
+            config.player_count = 2
+        self.player_button.text = "AMOUNT OF PLAYERS: <%d>" % config.player_count

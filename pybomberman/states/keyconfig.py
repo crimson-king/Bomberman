@@ -5,7 +5,7 @@ This module implements functionality that allows user to view and change key
 __author__ = 'Tomasz Rzepka'
 import pygame
 
-from framework.state import State
+from framework.ui import StageState
 from pybomberman.menu import Item
 from pybomberman.config import config
 from framework import state_manager
@@ -16,14 +16,12 @@ CRIMSON = (220, 20, 60)
 pygame.init()
 
 
-class KeyConfigState(State):
+class KeyConfigState(StageState):
     """
     This class implements State that allows user to view and change key
     mappings
     """
-    def __init__(self, width, height):
-        self.width = width / 2
-        self.height = height / 2
+    def __init__(self):
         self.current_player = 0
         self.selecting_key = False
         option_functions = (('Player <%d> keys' % (self.current_player + 1),
@@ -105,29 +103,3 @@ class KeyConfigState(State):
             config.players[self.current_player].key_binding.right = key
         self.update_keys()
 
-    def handle_draw(self, canvas):
-        """ draws current state """
-        canvas.fill((40, 60, 190))
-        for item in self.items:
-            canvas.blit(item.label, item.position)
-            item.highlight(BLACK)
-        self.items[self.selected].highlight(CRIMSON)
-
-    def handle_input(self, event):
-        """ handles input from user """
-        if event.type == pygame.KEYDOWN:
-            if self.selecting_key:
-                self.set_key(event.key)
-                self.selecting_key = False
-            elif event.key == pygame.K_DOWN:
-                if self.selected < len(self.items) - 1:
-                    self.selected += 1
-                else:
-                    self.selected = 0
-            elif event.key == pygame.K_UP:
-                if self.selected == 0:
-                    self.selected = len(self.items) - 1
-                else:
-                    self.selected -= 1
-            elif event.key == pygame.K_RETURN:  # K_RETURN = enter
-                self.items[self.selected].function()
