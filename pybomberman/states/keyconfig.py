@@ -5,14 +5,12 @@ This module implements functionality that allows user to view and change key
 __author__ = 'Tomasz Rzepka'
 import pygame
 
-from framework.ui import StageState
+from framework.ui import StageState, Button
 from pybomberman.menu import Item
 from pybomberman.config import config
 from framework import state_manager
 
 # pylint: disable=no-member
-BLACK = (0, 0, 0)
-CRIMSON = (220, 20, 60)
 pygame.init()
 
 
@@ -22,44 +20,42 @@ class KeyConfigState(StageState):
     mappings
     """
     def __init__(self):
+        super().__init__()
         self.current_player = 0
         self.selecting_key = False
-        option_functions = (('Player <%d> keys' % (self.current_player + 1),
-                             self.change_current_player),
-                            ('Action: ' +
-                             pygame.key.name(
-                                 config.players[self.current_player].key_binding.action),
-                             self.select_key),
-                            ('Up key: ' +
-                             pygame.key.name(
-                                 config.players[self.current_player].key_binding.upward),
-                             self.select_key),
-                            ('Down key: ' +
-                             pygame.key.name(
-                                 config.players[self.current_player].key_binding.down),
-                             self.select_key),
-                            ('Left key: ' +
-                             pygame.key.name(
-                                 config.players[self.current_player].key_binding.left),
-                             self.select_key),
-                            ('Right key: ' +
-                             pygame.key.name(
-                                 config.players[self.current_player].key_binding.right),
-                             self.select_key),
-                            ('Go Back', state_manager.pop))
-        self.items = []
-        for i, item in enumerate(option_functions):
-            self.items.append(Item(item, size=35))
-        self.selected = 0
 
-        for i, menu_item in enumerate(self.items):
-            height = menu_item.height * len(self.items)
-            if i == 0 or i == len(self.items) - 1:
-                x_coordinate = self.width - menu_item.width / 2
-            else:
-                x_coordinate = self.width - 200
-            y_coordinate = self.height / 2 - height / 2 + i * 2 + 2 * i * menu_item.height
-            menu_item.set_position(x_coordinate, y_coordinate)
+        self.player_button = Button('PLAYER <%d> KEYS' % (self.current_player + 1))
+        self.player_button.on_click = self.on_click
+        self.stage.add_node(self.player_button)
+
+        self.action_button = Button('ACTION: ' + pygame.key.name(
+                                    config.players[self.current_player].key_binding.action))
+        self.stage.add_node(self.action_button)
+        self.action_button.on_click = self.on_click
+
+        self.up_button = Button('UP: ' + pygame.key.name(
+                                config.players[self.current_player].key_binding.upward))
+        self.stage.add_node(self.up_button)
+        self.up_button.on_click = self.on_click
+
+        self.down_button = Button('DOWN: ' + pygame.key.name(
+                                  config.players[self.current_player].key_binding.down))
+        self.stage.add_node(self.down_button)
+        self.down_button.on_click = self.on_click
+
+        self.left_button = Button('LEFT: ' + pygame.key.name(
+                                  config.players[self.current_player].key_binding.left))
+        self.stage.add_node(self.left_button)
+        self.left_button.on_click = self.on_click
+
+        self.right_button = Button('RIGHT: ' + pygame.key.name(
+                                   config.players[self.current_player].key_binding.right))
+        self.stage.add_node(self.right_button)
+        self.right_button.on_click = self.on_click
+
+        self.exit_button = Button('GO BACK')
+        self.stage.add_node(self.exit_button)
+        self.exit_button.on_click = self.on_click
 
     def select_key(self):
         """ Prepares key for new mapping """
@@ -72,21 +68,21 @@ class KeyConfigState(StageState):
         """ selects next available for which settings are being set """
         self.current_player = (
             (self.current_player + 1) % 4)
-        self.items[self.selected].text = "Player <%d> keys" % (
+        self.player_button.text = "PLAYER <%d> KEYS" % (
             self.current_player + 1)
         self.update_keys()
 
     def update_keys(self):
         """ updates key names for key mappings for current player """
-        self.items[1].text = 'Action: ' + pygame.key.name(
+        self.action_button.text = 'Action: ' + pygame.key.name(
             config.players[self.current_player].key_binding.action)
-        self.items[2].text = 'Up key: ' + pygame.key.name(
+        self.up_button.text = 'Up key: ' + pygame.key.name(
             config.players[self.current_player].key_binding.upward)
-        self.items[3].text = 'Down key: ' + pygame.key.name(
+        self.down_button.text = 'Down key: ' + pygame.key.name(
             config.players[self.current_player].key_binding.down)
-        self.items[4].text = 'Left key: ' + pygame.key.name(
+        self.left_button.text = 'Left key: ' + pygame.key.name(
             config.players[self.current_player].key_binding.left)
-        self.items[5].text = 'Right key: ' + pygame.key.name(
+        self.right_button.text = 'Right key: ' + pygame.key.name(
             config.players[self.current_player].key_binding.right)
 
     def set_key(self, key):
@@ -103,3 +99,30 @@ class KeyConfigState(StageState):
             config.players[self.current_player].key_binding.right = key
         self.update_keys()
 
+    def on_click(self, button: Button):
+        """Button functions"""
+        if button is self.player_button:
+            self.change_current_player()
+            self.update_keys()
+        elif button is self.action_button:
+            self.update_keys()
+            pass
+            # config.players[self.current_player].key_binding.action = key
+        elif button is self.up_button:
+            self.update_keys()
+            pass
+            # config.players[self.current_player].key_binding.upward = key
+        elif button is self.down_button:
+            self.update_keys()
+            pass
+            # config.players[self.current_player].key_binding.down = key
+        elif button is self.left_button:
+            self.update_keys()
+            pass
+            # config.players[self.current_player].key_binding.left = key
+        elif button is self.right_button:
+            self.update_keys()
+            pass
+            # config.players[self.current_player].key_binding.right = key
+        elif button is self.exit_button:
+            state_manager.pop()

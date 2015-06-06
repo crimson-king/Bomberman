@@ -3,6 +3,7 @@ import pygame
 from framework.ui import StageState, Text, Button
 from framework import state_manager
 from pybomberman.config import config
+from pybomberman.states.keyconfig import KeyConfigState
 
 # pylint: disable=no-member
 BLACK = (0, 0, 0)
@@ -43,8 +44,9 @@ class OptionsState(StageState):
         elif button is self.resolution_button:
             print('NotYetImplemented')
         elif button is self.key_config_button:
-            pass
+            state_manager.push(KeyConfigState())
         elif button is self.exit_button:
+            config.save()
             state_manager.pop()
 
     def chooseplayers(self):

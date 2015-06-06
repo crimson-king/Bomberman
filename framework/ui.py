@@ -85,7 +85,7 @@ class Button(Text):
 
     def __init__(self, text,
                  normal_color=(0, 0, 0xff),
-                 focused_color=(0, 0xff, 0xff)):
+                 focused_color=(220, 20, 60)):
         super().__init__(text, color=normal_color)
 
         self._text = text
