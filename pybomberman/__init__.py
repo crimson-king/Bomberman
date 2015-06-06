@@ -14,8 +14,10 @@ def main():
     from framework.core import Game
     from framework.state import StateGameHandler
     from framework import state_manager
-    from pybomberman.gamestate import GameState
+    from pybomberman.states.game import GameState
     from pybomberman.config import config
+    from pybomberman.states.mainmenu import MainMenuState
 
-    state_manager.push(GameState())
-    Game(StateGameHandler(), 60, *config.resolution).start()
+    game = Game(StateGameHandler(), 60, *config.resolution)
+    state_manager.push(MainMenuState())
+    game.start()

@@ -28,7 +28,7 @@ class ResultState(StageState):
             state_manager.pop()
         elif button is self.again_button:
             state_manager.pop()
-            from pybomberman.gamestate import GameState
+            from pybomberman.states.game import GameState
 
             state_manager.push(GameState())
 

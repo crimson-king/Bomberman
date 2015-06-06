@@ -2,6 +2,9 @@
 from itertools import product
 import random
 
+# pygame modules are loaded dynamically, thus, supress no name/members errors
+# pylint: disable=no-name-in-module
+# pylint: disable=no-member
 import pygame
 
 from framework import input_manager, state_manager
@@ -14,8 +17,8 @@ from pybomberman import physics
 from pybomberman.config import config
 from pybomberman.controllers import HumanController
 from pybomberman.objects import Wall, Player, DestructibleWall
-from pybomberman.resultstate import ResultState
-# pylint: disable=no-member
+from pybomberman.states.result import ResultState
+
 
 class World(NodeGroup):
     """Contains node groups with objects"""
@@ -122,12 +125,12 @@ class World(NodeGroup):
                     powerup.collect(player)
                     self.powerups.remove_node(powerup)
             for fire in self.fire:
-                if physics.collides(player, fire, resolve=False):
+                if physics.collides(player, fire, resolve=False) \
+                        and player in self.players:
                     player.hit()
-                    if player.health <= 0:
-                        self.players.remove_node(player)
-                        if player is not fire.owner:
-                            fire.owner.kills += 1
+                    self.players.remove_node(player)
+                    if player is not fire.owner:
+                        fire.owner.kills += 1
 
             player.position.x = max(player.position.x, 0)
             player.position.x = min(player.position.x,
@@ -153,9 +156,6 @@ class GameState(State):
             for _ in range(config.player_count)
         ]
         self.players = [controller.player for controller in self.controllers]
-
-        for controller in self.controllers:
-            self.world.players.add_node(controller.player)
 
         self.escape_action = InitialAction()
 
