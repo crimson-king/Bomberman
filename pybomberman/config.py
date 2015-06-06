@@ -2,13 +2,15 @@
 import os
 import json
 
+# pylint: disable=no-member
 import pygame
 
 import pybomberman
-# pylint: disable=no-member
+
 
 class PlayerKeyBinding:
     """5 keys that player uses"""
+
     def __init__(self,
                  action=pygame.K_SPACE,
                  upward=pygame.K_UP,
@@ -24,6 +26,7 @@ class PlayerKeyBinding:
 
 class PlayerConfig:
     """Player configuration"""
+
     def __init__(self, **kwargs):
         self.key_binding = PlayerKeyBinding(**kwargs['key_binding'])
 
@@ -34,14 +37,8 @@ class PlayerConfig:
 
 class Config:
     """Configuration class"""
-    def __init__(self, **kwargs):
-        self.player_count = kwargs['player_count']
-        self.resolution = kwargs['resolution']
-        self.players = [PlayerConfig(**player_dict)
-                        for player_dict in kwargs['players']]
 
-    def update(self, **kwargs):
-        """Updates config"""
+    def __init__(self, **kwargs):
         self.player_count = kwargs['player_count']
         self.resolution = kwargs['resolution']
         self.players = [PlayerConfig(**player_dict)
@@ -55,20 +52,20 @@ class Config:
 
     def save(self):
         """Saves configuration in json"""
-        with open(filepath, mode='w+') as file_handle:
+        with open(FILEPATH, mode='w+') as file_handle:
             json.dump(self.to_dict(), fp=file_handle, indent=4)
 
+
+FILENAME = 'config.json'
+
+PROJECT_DIRNAME = os.path.dirname(pybomberman.__file__)
+FILEPATH = os.path.join(os.path.dirname(PROJECT_DIRNAME), FILENAME)
+
+# not a constant
 # pylint: disable=invalid-name
-# not constants
 
-filename = 'config.json'
-
-_MAX_PLAYERS = 4
-
-pybomberman_dirname = os.path.dirname(pybomberman.__file__)
-filepath = os.path.join(os.path.dirname(pybomberman_dirname), filename)
-if os.path.exists(filepath):
-    with open(filepath) as config_file:
+if os.path.exists(FILEPATH):
+    with open(FILEPATH) as config_file:
         try:
             config = json.load(config_file)
         except ValueError as error:
@@ -76,7 +73,6 @@ if os.path.exists(filepath):
             raise
 else:
     raise FileNotFoundError(
-        'Could not find configuration file: {}'.format(filepath))
-
+        'Could not find configuration file: {}'.format(FILEPATH))
 
 config = Config(**config)

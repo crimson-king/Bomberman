@@ -120,6 +120,7 @@ class Powerup(GameObject):
 
 class BombAmountPowerup(Powerup):
     """Powerup increasing the amount of bombs"""
+
     def __init__(self, world, *args, **kwargs):
         sprite = GenericSprite(os.path.join(ASSETS_PATH, 'bomb.png'))
         super().__init__(world, sprite, *args, **kwargs)
