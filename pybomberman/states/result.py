@@ -16,6 +16,7 @@ class ResultState(StageState):
             self.stage.add_node(text_view)
 
         self.again_button = Button('Again')
+        self.again_button.on_click = self.on_click
         self.stage.add_node(self.again_button)
 
         self.menu_button = Button('Menu')
@@ -29,7 +30,6 @@ class ResultState(StageState):
         elif button is self.again_button:
             state_manager.pop()
             from pybomberman.states.game import GameState
-
             state_manager.push(GameState())
 
     def destroy(self):
