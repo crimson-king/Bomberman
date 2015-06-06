@@ -200,7 +200,7 @@ class StageState(State):
 
     def handle_draw(self, canvas):
         """Draws stage"""
-        canvas.fill((0xff, 0xff, 0xff))
+        canvas.fill((36, 36, 36))
         self.stage.draw(canvas)
 
     def handle_update(self, delta_time):
