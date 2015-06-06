@@ -3,7 +3,7 @@
         960,
         600
     ],
-    "player_count": 3,
+    "player_count": 4,
     "players": [
         {
             "key_binding": {
@@ -25,20 +25,20 @@
         },
         {
             "key_binding": {
-                "left": 274,
-                "down": 276,
-                "right": 275,
-                "upward": 273,
-                "action": 32
+                "left": 106,
+                "down": 107,
+                "right": 108,
+                "upward": 105,
+                "action": 59
             }
         },
         {
             "key_binding": {
-                "left": 276,
-                "down": 274,
-                "right": 275,
-                "upward": 273,
-                "action": 32
+                "left": 260,
+                "down": 258,
+                "right": 262,
+                "upward": 264,
+                "action": 256
             }
         }
     ]
