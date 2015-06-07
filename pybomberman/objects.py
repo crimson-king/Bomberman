@@ -102,7 +102,7 @@ class BombAmountPowerup(Powerup):
     """Powerup increasing the amount of bombs"""
 
     def __init__(self, world, *args, **kwargs):
-        sprite = GenericSprite(os.path.join(ASSETS_PATH, 'bomb.png'))
+        sprite = GenericSprite(os.path.join(ASSETS_PATH, 'bomb_powerup.png'))
         super().__init__(world, sprite, *args, **kwargs)
 
     def collect(self, player: 'Player'):
@@ -184,6 +184,7 @@ class Bomb(GameObject):
 
         # remove bomb from world here to avoid circular detonates
         self.parent.remove_node(self)
+        self.owner.bombs.remove(self)
 
         right = zip(
             range(int(self.position.x) + 1,
@@ -303,7 +304,7 @@ class Player(GameObject):
     @property
     def speed(self):
         """Returns speed"""
-        return 1 + self.speed_level * .25
+        return 1.5 + self.speed_level * .25
 
     @speed.setter
     def speed(self, value):
