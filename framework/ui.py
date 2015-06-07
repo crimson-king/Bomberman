@@ -97,6 +97,7 @@ class Button(Text):
         self.render()
 
     def render(self):
+        """Renders the button"""
         focused = self.surface is self.surface_focused
         self.surface_normal = self.font.render(
             self._text, True, self.normal_color)
@@ -110,10 +111,12 @@ class Button(Text):
 
     @property
     def text(self):
+        """Returns text on a button"""
         return self._text
 
     @text.setter
     def text(self, value):
+        """Sets text on a button"""
         self._text = value
         self.render()
 
