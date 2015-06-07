@@ -68,6 +68,8 @@ class World(NodeGroup):
                 if random.random() < .8:
                     self.add_destructible_wall((pos_x, pos_y))
 
+        pygame.mixer.music.load(os.path.join(ASSETS_PATH, 'WilhelmScream.mp3'))
+
     def add_wall(self, position):
         """Adds a wall"""
         wall = Wall()
@@ -130,7 +132,8 @@ class World(NodeGroup):
                 if physics.collides(player, fire, resolve=False) \
                         and player in self.players:
                     player.hit()
-                    pygame.mixer.music.load(os.path.join(ASSETS_PATH, 'WilhelmScream.mp3'))
+
+                    pygame.mixer.music.play()
                     self.players.remove_node(player)
                     if player is not fire.owner:
                         fire.owner.kills += 1
