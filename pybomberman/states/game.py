@@ -6,6 +6,7 @@ import random
 # pylint: disable=no-name-in-module
 # pylint: disable=no-member
 import pygame
+import os
 
 from framework import input_manager, state_manager
 from framework.core import Game
@@ -14,6 +15,7 @@ from framework.state import State
 from framework.scene import NodeGroup
 from pybomberman import PPM
 from pybomberman import physics
+from pybomberman import ASSETS_PATH
 from pybomberman.config import config
 from pybomberman.controllers import HumanController
 from pybomberman.objects import Wall, Player, DestructibleWall
@@ -128,6 +130,7 @@ class World(NodeGroup):
                 if physics.collides(player, fire, resolve=False) \
                         and player in self.players:
                     player.hit()
+                    pygame.mixer.music.load(os.path.join(ASSETS_PATH, 'WilhelmScream.mp3'))
                     self.players.remove_node(player)
                     if player is not fire.owner:
                         fire.owner.kills += 1
