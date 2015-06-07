@@ -38,26 +38,6 @@ class GameObject(Node):
         self.position += self.velocity * self.speed * delta_time
 
 
-class BombSprite(Sprite):
-    """Sprite of bomb"""
-
-    def __init__(self):
-        super().__init__()
-        self.image = pygame.Surface((PPM, PPM))
-        self.image.fill((0, 0, 0))
-        self.rect = self.image.get_rect()
-
-
-class FireSprite(Sprite):
-    """Sprite of fire"""
-
-    def __init__(self):
-        super().__init__()
-        self.image = pygame.Surface((PPM, PPM))
-        self.image.fill((0xff, 0, 0))
-        self.rect = self.image.get_rect()
-
-
 class GenericSprite(Sprite):
     """Sprite of powerup."""
 
@@ -147,7 +127,7 @@ class RangePowerup(Powerup):
     """Powerup that extends your fire"""
 
     def __init__(self, world, *args, **kwargs):
-        filepath = os.path.join(ASSETS_PATH, 'bomb.png')
+        filepath = os.path.join(ASSETS_PATH, 'range_powerup.png')
         sprite = GenericSprite(filepath)
         super().__init__(world, sprite, *args, **kwargs)
 
@@ -159,8 +139,9 @@ class RangePowerup(Powerup):
 class Fire(GameObject):
     """Fire class"""
 
-    def __init__(self, owner: 'Player', sprite=FireSprite(), *args,
-                 **kwargs):
+    def __init__(self, owner: 'Player', *args, **kwargs):
+        filepath = os.path.join(ASSETS_PATH, 'fire.png')
+        sprite = GenericSprite(filepath)
         shape = Rectangle(0, 0, 1, 1)
         super().__init__(shape, sprite, *args, **kwargs)
         self.owner = owner
